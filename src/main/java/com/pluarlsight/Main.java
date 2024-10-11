@@ -6,6 +6,7 @@ public class Main {
     static Scanner scan = new Scanner(System.in);
     static boolean runHomeScreen = true;
     static boolean runLedgerScreen = true;
+    static boolean isNotFirstTimeStartingApp = false; //add to all menus
 
     public static void main(String[] args) {
         //Welcome Message
@@ -17,29 +18,45 @@ public class Main {
                 "P) Make a payment (debit)\n" +
                 "L) Ledger\n" +
                 "X) Exit\n");
-        String input = scan.nextLine();
+        String homeInput = scan.nextLine();
         //Menu Options
         while (runHomeScreen) {
-            switch (Character.toUpperCase(input.charAt(0))) {
-                case 'X':
-                    System.out.println("Goodbye!");
-                    runHomeScreen = false;
-                    break;
-                case 'D':
-                    //method
-                    break;
-                case 'P':
-                    //method
-                    break;
-                case 'L':
-                    ledger();
-                    scan.nextLine();//???
-                    runHomeScreen = true;
-                    break;
-                default:
-                    System.out.println("Invalid input, try again");
-            }
+            //An if for coming back to the Home Screen show Welcome Back!
+            if (isNotFirstTimeStartingApp) {
+                System.out.println("Welcome Back!\n" +
+                    "Input one of the following to get started!\n" +
+                    "\nHome Screen\n" +
+                    "-----------\n" +
+                    "D) Add a deposit\n" +
+                    "P) Make a payment (debit)\n" +
+                    "L) Ledger\n" +
+                    "X) Exit\n");
+                homeInput = scan.nextLine();
 
+
+            } else {
+                switch (Character.toUpperCase(homeInput.charAt(0))) {
+                    case 'X':
+                        System.out.println("Goodbye!");
+                        runHomeScreen = false;
+                        break;
+                    case 'D':
+                        //method
+                        break;
+                    case 'P':
+                        //method
+                        break;
+                    case 'L':
+                        ledger();
+                        //scan.nextLine();//???
+                        runHomeScreen = true;//Unnccessary to turn off?
+                        homeInput = scan.nextLine();
+                        break;
+                    default:
+                        System.out.println("Invalid input, try again");
+                }
+
+            }
         }
 
         scan.close();
@@ -47,6 +64,7 @@ public class Main {
 
     public static void ledger() {
         runHomeScreen = false;
+        isNotFirstTimeStartingApp = true;
         //runLedgerScreen = true; //May need to be after sout
         System.out.println("Welcome to the Ledger Menu\n" +
                 "\nInput one of the following to get started!\n" +
@@ -54,15 +72,15 @@ public class Main {
                 "D) Deposits\n" +
                 "P) Payments\n" +
                 "R) Reports");
-        String input = scan.nextLine();
+        String ledgerInput = scan.nextLine();
         //Menu Options
         while (runLedgerScreen) {
-            switch (Character.toUpperCase(input.charAt(0))) {
+            switch (Character.toUpperCase(ledgerInput.charAt(0))) {
                 case 'H': //Home Screen
                     runLedgerScreen = false;
-                    return;
+                    //return;
                     //runHomeScreen = true;
-                    //break;
+                    break;
                 case 'D':
                     //method
                     break;
