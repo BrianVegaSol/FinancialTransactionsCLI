@@ -23,17 +23,7 @@ public class Main {
         while (runHomeScreen) {
             //An if for coming back to the Home Screen show Welcome Back!
             if (isNotFirstTimeStartingApp) {
-                System.out.println("Welcome Back!\n" +
-                    "Input one of the following to get started!\n" +
-                    "\nHome Screen\n" +
-                    "-----------\n" +
-                    "D) Add a deposit\n" +
-                    "P) Make a payment (debit)\n" +
-                    "L) Ledger\n" +
-                    "X) Exit\n");
-                homeInput = scan.nextLine();
-
-
+                welcomeBackHomeMenu();
             } else {
                 switch (Character.toUpperCase(homeInput.charAt(0))) {
                     case 'X':
@@ -50,7 +40,7 @@ public class Main {
                         ledger();
                         //scan.nextLine();//???
                         runHomeScreen = true;//Unnccessary to turn off?
-                        homeInput = scan.nextLine();
+                        //homeInput = scan.nextLine(); necessary?
                         break;
                     default:
                         System.out.println("Invalid input, try again");
@@ -71,7 +61,8 @@ public class Main {
                 "A) All\n" +
                 "D) Deposits\n" +
                 "P) Payments\n" +
-                "R) Reports");
+                "R) Reports\n" +
+                "H) Home");
         String ledgerInput = scan.nextLine();
         //Menu Options
         while (runLedgerScreen) {
@@ -96,5 +87,37 @@ public class Main {
 
         }
         //run if else for HomeMenu method???
+    }
+
+    public static void welcomeBackHomeMenu () {
+        System.out.println("Welcome Back!\n" +
+                "\nHome Screen\n" +
+                "-----------\n" +
+                "D) Add a deposit\n" +
+                "P) Make a payment (debit)\n" +
+                "L) Ledger\n" +
+                "X) Exit\n");
+        String backHomeInput = scan.nextLine();
+
+        switch (Character.toUpperCase(backHomeInput.charAt(0))) {
+            case 'X':
+                System.out.println("Goodbye!");
+                runHomeScreen = false;
+                break;
+            case 'D':
+                //method
+                break;
+            case 'P':
+                //method
+                break;
+            case 'L':
+                ledger();
+                //scan.nextLine();//???
+                runHomeScreen = true;//Unnccessary to turn off?
+                backHomeInput = scan.nextLine();
+                break;
+            default:
+                System.out.println("Invalid input, try again");
+        }
     }
 }
