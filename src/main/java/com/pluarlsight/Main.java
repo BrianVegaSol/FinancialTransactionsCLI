@@ -18,42 +18,45 @@ public class Main {
                 "P) Make a payment (debit)\n" +
                 "L) Ledger\n" +
                 "X) Exit\n");
-        String homeInput = scan.nextLine();
-        //Menu Options
+        //Home Menu Options
         while (runHomeScreen) {
-            //An if for coming back to the Home Screen show Welcome Back!
+            //Welcome Back message if coming back another menu
             if (isNotFirstTimeStartingApp) {
                 welcomeBackHomeMenu();
             } else {
-                switch (Character.toUpperCase(homeInput.charAt(0))) {
-                    case 'X':
-                        System.out.println("Goodbye!");
-                        runHomeScreen = false;
-                        break;
-                    case 'D':
-                        //method
-                        break;
-                    case 'P':
-                        //method
-                        break;
-                    case 'L':
-                        ledger();
-                        //scan.nextLine();//???
-                        runHomeScreen = true;//Unnccessary to turn off?
-                        //homeInput = scan.nextLine(); necessary?
-                        break;
-                    default:
-                        System.out.println("Invalid input, try again");
-                }
-
+                firstTimeSwitch();
             }
         }
 
         scan.close();
     }
+public static void firstTimeSwitch () {
+        String homeInput = scan.nextLine();
+    switch (Character.toUpperCase(homeInput.charAt(0))) {
+        case 'X':
+            System.out.println("Goodbye!");
+            runHomeScreen = false;
+            break;
+        case 'D':
+            //method
+            break;
+        case 'P':
+            //method
+            break;
+        case 'L':
+            ledger();
+            //scan.nextLine();//???
+            runHomeScreen = true;//Unnccessary to turn off?
+            //homeInput = scan.nextLine(); necessary?
+            break;
+        default:
+            System.out.println("Invalid input, try again");
+    }
+}
 
     public static void ledger() {
         runHomeScreen = false;
+        runLedgerScreen = true;
         isNotFirstTimeStartingApp = true;
         //runLedgerScreen = true; //May need to be after sout
         System.out.println("Welcome to the Ledger Menu\n" +
@@ -114,7 +117,7 @@ public class Main {
                 ledger();
                 //scan.nextLine();//???
                 runHomeScreen = true;//Unnccessary to turn off?
-                backHomeInput = scan.nextLine();
+                //backHomeInput = scan.nextLine();
                 break;
             default:
                 System.out.println("Invalid input, try again");
