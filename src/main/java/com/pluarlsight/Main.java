@@ -57,40 +57,44 @@ public class Main {
     }
 
     public static void welcomeBackHomeMenu() {
-        System.out.println("Welcome Back!\n" +
-                "\nHome Screen\n" +
-                "-----------\n" +
-                "D) Add a deposit\n" +
-                "P) Make a payment (debit)\n" +
-                "L) Ledger\n" +
-                "X) Exit");
-        String backHomeInput = scan.nextLine();
-        //while (runHomeScreen) { //loop is creating an issue where l from last input isnt being eaten so
-        //need scanNext somewhere
-        switch (Character.toUpperCase(backHomeInput.charAt(0))) {
-            case 'X':
-                System.out.println("Goodbye!");
-                runHomeScreen = false;
-                scan.close();
-                break;
-            case 'D':
-                //method
-                runHomeScreen = true;//Pre added, delete if issues
-                break;
-            case 'P':
-                //methood
-                runHomeScreen = true;//Pre added, delete if issues
-                break;
-            case 'L':
-                ledger();
-                runHomeScreen = true;
-                break;
-            default:
-                System.out.println("Invalid input, try again");
-                backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
-                break;
+        //IF THIS WHILE LOOP BREAKS STUFF REVERT TO STABLE BUILD
+        while (runHomeScreen) { //loop is creating an issue where l from last input isnt being eaten so
+            System.out.println("Welcome Back!\n" +
+                    "\nHome Screen\n" +
+                    "-----------\n" +
+                    "D) Add a deposit\n" +
+                    "P) Make a payment (debit)\n" +
+                    "L) Ledger\n" +
+                    "X) Exit");
+            String backHomeInput = scan.nextLine();
+            switch (Character.toUpperCase(backHomeInput.charAt(0))) {
+                case 'X':
+                    System.out.println("Goodbye!");
+                    runHomeScreen = false;
+                    scan.close();
+                    break;
+                case 'D':
+                    //method
+                    runHomeScreen = true;//Pre added, delete if issues
+                    break;
+                case 'P':
+                    //methood
+                    runHomeScreen = true;//Pre added, delete if issues
+                    break;
+                case 'L':
+                    ledger();
+                    runHomeScreen = true;
+                    break;
+                default:
+                    // I D E A have a while loop here (hear me out)
+                    //have a method of valid inputs in an array(list/map) and use for each loop to loop through it
+                    //or a long if x || D etc
+                    //while (!validInput) { //all for a minor change :')))
+                    System.out.println("Invalid input, try again");
+                    //backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
+                    break;
+            }
         }
-        //}
     }
 
     public static void ledger() {
