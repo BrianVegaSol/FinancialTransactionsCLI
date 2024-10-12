@@ -7,7 +7,7 @@ public class Main {
     static boolean runHomeScreen = true;
     static boolean runLedgerScreen = true;
     static boolean runReportsMenu = true;
-    static boolean isNotFirstTimeStartingApp = false; //add to all menus
+    static boolean isNotFirstTimeStartingApp = false; //add to all Home menu options
 
     public static void main(String[] args) {
         //Welcome Message
@@ -47,11 +47,9 @@ public class Main {
                 break;
             case 'L':
                 ledger();
-                //runHomeScreen = true;//Unnccessary to turn off? Probably //Legacy with welcomeBack()
                 break;
             default:
                 System.out.println("Invalid input, try again");
-                //homeInput = scan.nextLine();
                 break;
         }
     }
@@ -65,8 +63,9 @@ public class Main {
                 "L) Ledger\n" +
                 "X) Exit");
         String backHomeInput = scan.nextLine();
-        //while (runHomeScreen) { //loop is creating an issue where l from last input isnt being eaten so
+        while (runHomeScreen) { //loop is creating an issue where l from last input isnt being eaten so
         //need scanNext somewhere
+            //String backHomeInput = scan.nextLine();
             switch (Character.toUpperCase(backHomeInput.charAt(0))) {
                 case 'X':
                     System.out.println("Goodbye!");
@@ -82,25 +81,22 @@ public class Main {
                     break;
                 case 'L':
                     ledger();
-                    runHomeScreen = true;//Unnccessary to turn off? Looks like it might be? Veeeery much necessary! closes
-                    //the program if not here, should probably add to the rest of the methods too
+                    runHomeScreen = true;
+                    /*if (scan.hasNextLine()) {
+                        backHomeInput = "s";// Could work!
+                    }*/
                     break;
                 default:
-                    //while loop to keep here? Seems unnecessary while (???) nah rather not
-                    //Not sure why the firstTime() works but this one ends to menu
-
-                    //Seems that the firstTime() is in the while(runHomeScreen) and so is ledger in while (runLedger)
-                    //oof guess I do need the backHomeInput now XD //Hit an infinite without it cx
                     System.out.println("Invalid input, try again");
                     backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
-                    break;//Needed? guess so, takes you back to Menu but should still have this here
+                    break;
             }
-        //}
+        }
     }
 
     public static void ledger() {
-        //runHomeScreen = false; // Is this necessary? Doesnt look like it is, tempted to delete this
         runLedgerScreen = true;
+        runHomeScreen = false; //Probably wont work either
         isNotFirstTimeStartingApp = true;
 
         System.out.println("Welcome to the Ledger Menu\n" +
@@ -116,6 +112,7 @@ public class Main {
             switch (Character.toUpperCase(ledgerInput.charAt(0))) {
                 case 'H': //Home Screen
                     runLedgerScreen = false;
+                    runHomeScreen = true;//probably not gonna work
                     break;
                 case 'A':
                     //method
@@ -131,7 +128,7 @@ public class Main {
                     break;
                 default:
                     System.out.println("Invalid input, try again");
-                    ledgerInput = scan.nextLine(); //OPS NEVER ADDED SCAN HERE, CAUSED AN INFINITE LOOP
+                    ledgerInput = scan.nextLine();
             }
 
         }
@@ -139,8 +136,6 @@ public class Main {
 
 
     public static void reports () {
-        //boolean runReportsMenu = true; //need to test if this is necessary to turn off // Probably need it :)
-        //May need to make this static??? Might as well
         System.out.println("Welcome to the Reports Menu\n" +
                 "\nInput one of the following to start searching!\n" +
                 "1) All\n" +
