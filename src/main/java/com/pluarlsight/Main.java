@@ -101,7 +101,7 @@ public class Main {
             switch (Character.toUpperCase(ledgerInput.charAt(0))) {
                 case 'H': //Home Screen
                     runLedgerScreen = false;
-                    welcomeBackHomeMenu(); //If ledger has issue, delete this // Dont do this,
+                    //welcomeBackHomeMenu(); //If ledger has issue, delete this // Dont do this,
                     // makes 2 Home Menu "instances", so need to close twice, just let it break and return to main class
                     break;
                 case 'A':
@@ -141,7 +141,9 @@ public class Main {
                 String reportsInput = scan.nextLine();
                 if (Character.toUpperCase(reportsInput.charAt(0)) == 'H') {
                     runReportsMenu = false;
-                    welcomeBackHomeMenu();
+                    runLedgerScreen = false;
+                    runHomeScreen = false;
+                    //welcomeBackHomeMenu(); Just make all the other menus false to prevent getting stuck
                 }
             }
         }
