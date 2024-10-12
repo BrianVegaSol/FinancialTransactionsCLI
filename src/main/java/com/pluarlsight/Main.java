@@ -67,34 +67,34 @@ public class Main {
         String backHomeInput = scan.nextLine();
         //while (runHomeScreen) { //loop is creating an issue where l from last input isnt being eaten so
         //need scanNext somewhere
-            switch (Character.toUpperCase(backHomeInput.charAt(0))) {
-                case 'X':
-                    System.out.println("Goodbye!");
-                    runHomeScreen = false;
-                    break;
-                case 'D':
-                    //method
-                    runHomeScreen = true;//Pre added, delete if issues
-                    break;
-                case 'P':
-                    //methood
-                    runHomeScreen = true;//Pre added, delete if issues
-                    break;
-                case 'L':
-                    ledger();
-                    runHomeScreen = true;//Unnccessary to turn off? Looks like it might be? Veeeery much necessary! closes
-                    //the program if not here, should probably add to the rest of the methods too
-                    break;
-                default:
-                    //while loop to keep here? Seems unnecessary while (???) nah rather not
-                    //Not sure why the firstTime() works but this one ends to menu
+        switch (Character.toUpperCase(backHomeInput.charAt(0))) {
+            case 'X':
+                System.out.println("Goodbye!");
+                runHomeScreen = false;
+                break;
+            case 'D':
+                //method
+                runHomeScreen = true;//Pre added, delete if issues
+                break;
+            case 'P':
+                //methood
+                runHomeScreen = true;//Pre added, delete if issues
+                break;
+            case 'L':
+                ledger();
+                runHomeScreen = true;//Unnccessary to turn off? Looks like it might be? Veeeery much necessary! closes
+                //the program if not here, should probably add to the rest of the methods too
+                break;
+            default:
+                //while loop to keep here? Seems unnecessary while (???) nah rather not
+                //Not sure why the firstTime() works but this one ends to menu
 
-                    //Seems that the firstTime() is in the while(runHomeScreen) and so is ledger in while (runLedger)
-                    //oof guess I do need the backHomeInput now XD //Hit an infinite without it cx
-                    System.out.println("Invalid input, try again");
-                    backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
-                    break;//Needed? guess so, takes you back to Menu but should still have this here
-            }
+                //Seems that the firstTime() is in the while(runHomeScreen) and so is ledger in while (runLedger)
+                //oof guess I do need the backHomeInput now XD //Hit an infinite without it cx
+                System.out.println("Invalid input, try again");
+                backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
+                break;//Needed? guess so, takes you back to Menu but should still have this here
+        }
         //}
     }
 
@@ -103,6 +103,9 @@ public class Main {
         runLedgerScreen = true;
         isNotFirstTimeStartingApp = true;
 
+        //Ledger Menu Options
+        while (runLedgerScreen) {
+        //moving this in seemed to work?
         System.out.println("Welcome to the Ledger Menu\n" +
                 "\nInput one of the following to get started!\n" +
                 "A) All\n" +
@@ -110,9 +113,7 @@ public class Main {
                 "P) Payments\n" +
                 "R) Reports\n" +
                 "H) Home");
-        String ledgerInput = scan.nextLine();
-        //Ledger Menu Options
-        while (runLedgerScreen) {
+            String ledgerInput = scan.nextLine();
             switch (Character.toUpperCase(ledgerInput.charAt(0))) {
                 case 'H': //Home Screen
                     runLedgerScreen = false;
@@ -131,14 +132,14 @@ public class Main {
                     break;
                 default:
                     System.out.println("Invalid input, try again");
-                    ledgerInput = scan.nextLine(); //OPS NEVER ADDED SCAN HERE, CAUSED AN INFINITE LOOP
+                    //ledgerInput = scan.nextLine(); //OPS NEVER ADDED SCAN HERE, CAUSED AN INFINITE LOOP
             }
 
         }
     }
 //
 
-    public static void reports () {
+    public static void reports() {
         runReportsMenu = true;
         //boolean runReportsMenu = true; //need to test if this is necessary to turn off // Probably need it :)
         //May need to make this static??? Might as well
@@ -154,14 +155,19 @@ public class Main {
         //Integer.parseInt?   if hasNext else?
         while (runReportsMenu) {
             //if (scan.hasNextLine()) {//probably causing an infinite // still 8
-                String reportStringInput = scan.nextLine();
-                if (Character.toUpperCase(reportStringInput.charAt(0)) == 'H') {
-                    runReportsMenu = false;
-                    runLedgerScreen = false;
-                    runHomeScreen = false;
-                } else {
-                    //int reportIntInput = scan.nextInt();
-                    //do I care do a while xO
+            String reportStringInput = scan.nextLine();
+            try {
+            if (Character.toUpperCase(reportStringInput.charAt(0)) == 'H') {
+                runReportsMenu = false;
+                runLedgerScreen = false;
+                runHomeScreen = false;
+
+            }}catch (IndexOutOfBoundsException) {
+            } else {
+                //int reportIntInput = scan.nextInt();
+                //do I care do a while xO //Already in a while loop so no more loops >:(
+                //try catch make the program not crash anymore :D
+                try {
                     switch (Integer.parseInt(reportStringInput)) { //Might cause issues by not saving scan to var like while loop xO
                         case 0:
                             runReportsMenu = false;
@@ -188,16 +194,17 @@ public class Main {
                             //may need to turn a menu on/off
                             break;
                         default:
-                            System.out.println("Invalid input, try again");
+                            System.out.println("Invalid number, try again");
                             reportStringInput = scan.nextLine();
                     }
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid input, try again");
                 }
+
+
+            }
             //}
         }
-
-
-
-
 
 
     }
