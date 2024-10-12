@@ -29,7 +29,7 @@ public class Main {
             }
         }
 
-        scan.close();
+        //scan.close();
     }
 
     public static void firstTimeSwitch() {
@@ -38,6 +38,7 @@ public class Main {
             case 'X':
                 System.out.println("Goodbye!");
                 runHomeScreen = false;
+                scan.close();
                 break;
             case 'D':
                 //method
@@ -71,6 +72,7 @@ public class Main {
             case 'X':
                 System.out.println("Goodbye!");
                 runHomeScreen = false;
+                scan.close();
                 break;
             case 'D':
                 //method
@@ -105,14 +107,14 @@ public class Main {
 
         //Ledger Menu Options
         while (runLedgerScreen) {
-        //moving this in seemed to work?
-        System.out.println("Welcome to the Ledger Menu\n" +
-                "\nInput one of the following to get started!\n" +
-                "A) All\n" +
-                "D) Deposits\n" +
-                "P) Payments\n" +
-                "R) Reports\n" +
-                "H) Home");
+            //moving this in seemed to work?
+            System.out.println("Welcome to the Ledger Menu\n" +
+                    "\nInput one of the following to get started!\n" +
+                    "A) All\n" +
+                    "D) Deposits\n" +
+                    "P) Payments\n" +
+                    "R) Reports\n" +
+                    "H) Home");
             String ledgerInput = scan.nextLine();
             switch (Character.toUpperCase(ledgerInput.charAt(0))) {
                 case 'H': //Home Screen
@@ -157,13 +159,16 @@ public class Main {
             //if (scan.hasNextLine()) {//probably causing an infinite // still 8
             String reportStringInput = scan.nextLine();
             try {
-            if (Character.toUpperCase(reportStringInput.charAt(0)) == 'H') {
-                runReportsMenu = false;
-                runLedgerScreen = false;
-                runHomeScreen = false;
-
-            }}catch (IndexOutOfBoundsException) {
-            } else {
+                if (Character.toUpperCase(reportStringInput.charAt(0)) == 'H') {
+                    runReportsMenu = false;
+                    runLedgerScreen = false;
+                    runHomeScreen = true;
+                    return;
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Invalid input, try again");
+            }
+            //if (scan.hasNextInt()) {
                 //int reportIntInput = scan.nextInt();
                 //do I care do a while xO //Already in a while loop so no more loops >:(
                 //try catch make the program not crash anymore :D
@@ -202,7 +207,7 @@ public class Main {
                 }
 
 
-            }
+            //}
             //}
         }
 
