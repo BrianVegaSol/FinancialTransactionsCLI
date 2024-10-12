@@ -48,7 +48,6 @@ public class Main {
                 break;
             case 'L':
                 ledger();
-                //runHomeScreen = true;//Unnccessary to turn off? Probably //Legacy with welcomeBack()
                 break;
             default:
                 System.out.println("Invalid input, try again");
@@ -84,18 +83,12 @@ public class Main {
                 break;
             case 'L':
                 ledger();
-                runHomeScreen = true;//Unnccessary to turn off? Looks like it might be? Veeeery much necessary! closes
-                //the program if not here, should probably add to the rest of the methods too
+                runHomeScreen = true;
                 break;
             default:
-                //while loop to keep here? Seems unnecessary while (???) nah rather not
-                //Not sure why the firstTime() works but this one ends to menu
-
-                //Seems that the firstTime() is in the while(runHomeScreen) and so is ledger in while (runLedger)
-                //oof guess I do need the backHomeInput now XD //Hit an infinite without it cx
                 System.out.println("Invalid input, try again");
                 backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
-                break;//Needed? guess so, takes you back to Menu but should still have this here
+                break;
         }
         //}
     }
@@ -107,7 +100,6 @@ public class Main {
 
         //Ledger Menu Options
         while (runLedgerScreen) {
-            //moving this in seemed to work?
             System.out.println("Welcome to the Ledger Menu\n" +
                     "\nInput one of the following to get started!\n" +
                     "A) All\n" +
@@ -143,8 +135,6 @@ public class Main {
 
     public static void reports() {
         runReportsMenu = true;
-        //boolean runReportsMenu = true; //need to test if this is necessary to turn off // Probably need it :)
-        //May need to make this static??? Might as well
         System.out.println("Welcome to the Reports Menu\n" +
                 "\nInput one of the following to start searching!\n" +
                 "1) Month To Date\n" +
@@ -154,10 +144,9 @@ public class Main {
                 "5) Search By Vendor\n" +
                 "0) Back\n" +
                 "H) Home");
-        //Integer.parseInt?   if hasNext else?
         while (runReportsMenu) {
-            //if (scan.hasNextLine()) {//probably causing an infinite // still 8
             String reportStringInput = scan.nextLine();
+            //Catch index errors for if()
             try {
                 if (Character.toUpperCase(reportStringInput.charAt(0)) == 'H') {
                     runReportsMenu = false;
@@ -168,47 +157,41 @@ public class Main {
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Invalid input, try again");
             }
-            //if (scan.hasNextInt()) {
-                //int reportIntInput = scan.nextInt();
-                //do I care do a while xO //Already in a while loop so no more loops >:(
-                //try catch make the program not crash anymore :D
-                try {
-                    switch (Integer.parseInt(reportStringInput)) { //Might cause issues by not saving scan to var like while loop xO
-                        case 0:
-                            runReportsMenu = false;
-                            runLedgerScreen = true;
-                            break;
-                        case 1:
-                            //method
-                            //may need to turn a menu on/off
-                            break;
-                        case 2:
-                            //method
-                            //may need to turn a menu on/off
-                            break;
-                        case 3:
-                            //method
-                            //may need to turn a menu on/off
-                            break;
-                        case 4:
-                            //method
-                            //may need to turn a menu on/off
-                            break;
-                        case 5:
-                            //method
-                            //may need to turn a menu on/off
-                            break;
-                        default:
-                            System.out.println("Invalid number, try again");
-                            reportStringInput = scan.nextLine();
-                    }
-                } catch (NumberFormatException e) {
-                    System.err.println("Invalid input, try again");
+            //catch NumberFormat errors for ()
+            try {
+                switch (Integer.parseInt(reportStringInput)) {
+                    case 0:
+                        runReportsMenu = false;
+                        runLedgerScreen = true;
+                        break;
+                    case 1:
+                        //method
+                        //may need to turn a menu on/off
+                        break;
+                    case 2:
+                        //method
+                        //may need to turn a menu on/off
+                        break;
+                    case 3:
+                        //method
+                        //may need to turn a menu on/off
+                        break;
+                    case 4:
+                        //method
+                        //may need to turn a menu on/off
+                        break;
+                    case 5:
+                        //method
+                        //may need to turn a menu on/off
+                        break;
+                    default:
+                        System.out.println("Invalid number, try again");
+                        reportStringInput = scan.nextLine();
                 }
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid input, try again");
+            }
 
-
-            //}
-            //}
         }
 
 
