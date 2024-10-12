@@ -6,6 +6,7 @@ public class Main {
     static Scanner scan = new Scanner(System.in);
     static boolean runHomeScreen = true;
     static boolean runLedgerScreen = true;
+    static boolean runReportsMenu = true;
     static boolean isNotFirstTimeStartingApp = false; //add to all menus
 
     public static void main(String[] args) {
@@ -46,10 +47,12 @@ public class Main {
                 break;
             case 'L':
                 ledger();
-                runHomeScreen = true;//Unnccessary to turn off?
+                //runHomeScreen = true;//Unnccessary to turn off? Probably //Legacy with welcomeBack()
                 break;
             default:
                 System.out.println("Invalid input, try again");
+                //homeInput = scan.nextLine();
+                break;
         }
     }
 
@@ -60,31 +63,43 @@ public class Main {
                 "D) Add a deposit\n" +
                 "P) Make a payment (debit)\n" +
                 "L) Ledger\n" +
-                "X) Exit\n");
+                "X) Exit");
         String backHomeInput = scan.nextLine();
+        //while (runHomeScreen) { //loop is creating an issue where l from last input isnt being eaten so
+        //need scanNext somewhere
+            switch (Character.toUpperCase(backHomeInput.charAt(0))) {
+                case 'X':
+                    System.out.println("Goodbye!");
+                    runHomeScreen = false;
+                    break;
+                case 'D':
+                    //method
+                    runHomeScreen = true;//Pre added, delete if issues
+                    break;
+                case 'P':
+                    //methood
+                    runHomeScreen = true;//Pre added, delete if issues
+                    break;
+                case 'L':
+                    ledger();
+                    runHomeScreen = true;//Unnccessary to turn off? Looks like it might be? Veeeery much necessary! closes
+                    //the program if not here, should probably add to the rest of the methods too
+                    break;
+                default:
+                    //while loop to keep here? Seems unnecessary while (???) nah rather not
+                    //Not sure why the firstTime() works but this one ends to menu
 
-        switch (Character.toUpperCase(backHomeInput.charAt(0))) {
-            case 'X':
-                System.out.println("Goodbye!");
-                runHomeScreen = false;
-                break;
-            case 'D':
-                //method
-                break;
-            case 'P':
-                //method
-                break;
-            case 'L':
-                ledger();
-                runHomeScreen = true;//Unnccessary to turn off?
-                break;
-            default:
-                System.out.println("Invalid input, try again");
-        }
+                    //Seems that the firstTime() is in the while(runHomeScreen) and so is ledger in while (runLedger)
+                    //oof guess I do need the backHomeInput now XD //Hit an infinite without it cx
+                    System.out.println("Invalid input, try again");
+                    backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
+                    break;//Needed? guess so, takes you back to Menu but should still have this here
+            }
+        //}
     }
 
     public static void ledger() {
-        runHomeScreen = false;
+        //runHomeScreen = false; // Is this necessary? Doesnt look like it is, tempted to delete this
         runLedgerScreen = true;
         isNotFirstTimeStartingApp = true;
 
@@ -101,8 +116,6 @@ public class Main {
             switch (Character.toUpperCase(ledgerInput.charAt(0))) {
                 case 'H': //Home Screen
                     runLedgerScreen = false;
-                    //welcomeBackHomeMenu(); //If ledger has issue, delete this // Dont do this,
-                    // makes 2 Home Menu "instances", so need to close twice, just let it break and return to main class
                     break;
                 case 'A':
                     //method
@@ -118,6 +131,7 @@ public class Main {
                     break;
                 default:
                     System.out.println("Invalid input, try again");
+                    ledgerInput = scan.nextLine(); //OPS NEVER ADDED SCAN HERE, CAUSED AN INFINITE LOOP
             }
 
         }
@@ -125,7 +139,8 @@ public class Main {
 
 
     public static void reports () {
-        boolean runReportsMenu = true; //need to test if this is necessary to turn off
+        //boolean runReportsMenu = true; //need to test if this is necessary to turn off // Probably need it :)
+        //May need to make this static??? Might as well
         System.out.println("Welcome to the Reports Menu\n" +
                 "\nInput one of the following to start searching!\n" +
                 "1) All\n" +
@@ -143,7 +158,6 @@ public class Main {
                     runReportsMenu = false;
                     runLedgerScreen = false;
                     runHomeScreen = false;
-                    //welcomeBackHomeMenu(); Just make all the other menus false to prevent getting stuck
                 }
             }
         }
