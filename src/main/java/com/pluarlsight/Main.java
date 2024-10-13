@@ -36,25 +36,29 @@ public class Main {
 
     public static void firstTimeSwitch() {
         String homeInput = scan.nextLine();
-        switch (Character.toUpperCase(homeInput.charAt(0))) {
-            case 'X':
-                System.out.println("Goodbye!");
-                runHomeScreen = false;
-                scan.close();
-                break;
-            case 'D':
-                fileWriterDeposits();
-                break;
-            case 'P':
-                fileWriterPayments();
-                break;
-            case 'L':
-                ledger();
-                break;
-            default:
-                System.out.println("Invalid input, try again");
-                //homeInput = scan.nextLine();
-                break;
+        try {
+            switch (Character.toUpperCase(homeInput.charAt(0))) {
+                case 'X':
+                    System.out.println("Goodbye!");
+                    runHomeScreen = false;
+                    scan.close();
+                    break;
+                case 'D':
+                    fileWriterDeposits();
+                    break;
+                case 'P':
+                    fileWriterPayments();
+                    break;
+                case 'L':
+                    ledger();
+                    break;
+                default:
+                    System.out.println("Invalid input, try again");
+                    //homeInput = scan.nextLine();
+                    break;
+            }
+        }catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();//?? Dont wanna throw an error message everytime getting out of Depo()
         }
     }
 
@@ -212,26 +216,29 @@ public class Main {
     }
 
     public static void fileWriterDeposits() {
+        isNotFirstTimeStartingApp = true;
         String file = "transactions.csv";
         System.out.println("Enter your Deposit data in the following format: \n" +
                 "date|time|description|vendor|amount");
         String userData = scan.nextLine();
         try (FileWriter writer = new FileWriter(file, true)){
-            writer.write("Deposit|" + userData);
-            writer.write("\n");
+            writer.write("Deposit|" + userData + "\n");
+            System.out.println("Deposit Data Added Successfully!");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void fileWriterPayments() {
+        isNotFirstTimeStartingApp = true;
         String file = "transactions.csv";
         System.out.println("Enter your Payment data in the following format: \n" +
                 "date|time|description|vendor|amount");
         String userData = scan.nextLine();
         try (FileWriter writer = new FileWriter(file, true)){
-            writer.write("Payment" + userData);
-            writer.write("\n");
+            writer.write("Payment|" + userData + "\n");
+            System.out.println("Payment Data Added Successfully!");
         } catch (IOException e) {
             e.printStackTrace();
         }
