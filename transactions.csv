@@ -3,3 +3,7 @@ Deposit|2012-07-20|01:21:00|Invoice 0045 paid|Bob|270.00
 Deposit|2001-08-01|03:47:00|Invoice 0011 paid|Daniel|152.00 
 Payment|2023-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
 Payment|2024-12-01|12:46:00|lemon juice|Amazon|-1.50
+Deposit|date|time|description|vendor|amount1
+Deposit|date|time|description|vendor|amount2
+Payment|date|time|description|vendor|amount1
+Deposit|date|time|description|vendor|amount1
