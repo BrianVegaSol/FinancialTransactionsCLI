@@ -1,5 +1,7 @@
 package com.pluarlsight;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -41,10 +43,10 @@ public class Main {
                 scan.close();
                 break;
             case 'D':
-                //method
+                fileWriterDeposits();
                 break;
             case 'P':
-                //method
+                fileWriterPayments();
                 break;
             case 'L':
                 ledger();
@@ -74,11 +76,22 @@ public class Main {
                     scan.close();
                     break;
                 case 'D':
-                    //method
+                    fileWriterDeposits();
                     runHomeScreen = true;//Pre added, delete if issues
+                    //if (1amount < 0) {sout(Did you want to make a Payment instead?)
+                    // if (yes) {take to payment() }
+
+                    //try catch for invalid responses
+                    //Use userData.split and make sure all splits have values?
+                    // try {if (userData.split[4] == null???)
+                    // } catch (IndexOOBE) { sout(Invalid try again)
+
+
+                    //confirm amount while (response == no){ loop }
+                    //then write to .csv
                     break;
                 case 'P':
-                    //methood
+                    fileWriterPayments();
                     runHomeScreen = true;//Pre added, delete if issues
                     break;
                 case 'L':
@@ -86,10 +99,6 @@ public class Main {
                     runHomeScreen = true;
                     break;
                 default:
-                    // I D E A have a while loop here (hear me out)
-                    //have a method of valid inputs in an array(list/map) and use for each loop to loop through it
-                    //or a long if x || D etc
-                    //while (!validInput) { //all for a minor change :')))
                     System.out.println("Invalid input, try again");
                     //backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
                     break;
@@ -196,10 +205,36 @@ public class Main {
                 System.err.println("Invalid input, try again");
             }
 
+
         }
 
 
     }
 
+    public static void fileWriterDeposits() {
+        String file = "transactions.csv";
+        System.out.println("Enter your Deposit data in the following format: \n" +
+                "date|time|description|vendor|amount");
+        String userData = scan.nextLine();
+        try (FileWriter writer = new FileWriter(file, true)){
+            writer.write("Deposit|" + userData);
+            writer.write("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void fileWriterPayments() {
+        String file = "transactions.csv";
+        System.out.println("Enter your Payment data in the following format: \n" +
+                "date|time|description|vendor|amount");
+        String userData = scan.nextLine();
+        try (FileWriter writer = new FileWriter(file, true)){
+            writer.write("Payment" + userData);
+            writer.write("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
