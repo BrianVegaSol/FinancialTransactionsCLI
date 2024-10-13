@@ -1,7 +1,10 @@
 package com.pluarlsight;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -10,6 +13,8 @@ public class Main {
     static boolean runLedgerScreen = true;
     static boolean runReportsMenu = true;
     static boolean isNotFirstTimeStartingApp = false; //add to all menus
+    static boolean isDepositEntry = false;
+    static boolean isPaymentEntry = false;
 
     public static void main(String[] args) {
         //Welcome Message
@@ -44,10 +49,14 @@ public class Main {
                     scan.close();
                     break;
                 case 'D':
-                    fileWriterDeposits();
+                    isDepositEntry = true;
+                    fileWriter();
+                    isDepositEntry = false;
                     break;
                 case 'P':
-                    fileWriterPayments();
+                    isPaymentEntry = true;
+                    fileWriter();
+                    isPaymentEntry = false;
                     break;
                 case 'L':
                     ledger();
@@ -80,23 +89,14 @@ public class Main {
                     scan.close();
                     break;
                 case 'D':
-                    fileWriterDeposits();
-                    runHomeScreen = true;//Pre added, delete if issues
-                    //if (1amount < 0) {sout(Did you want to make a Payment instead?)
-                    // if (yes) {take to payment() }
-
-                    //try catch for invalid responses
-                    //Use userData.split and make sure all splits have values?
-                    // try {if (userData.split[4] == null???)
-                    // } catch (IndexOOBE) { sout(Invalid try again)
-
-
-                    //confirm amount while (response == no){ loop }
-                    //then write to .csv
+                    isDepositEntry = true;
+                    fileWriter();
+                    isDepositEntry = false;
                     break;
                 case 'P':
-                    fileWriterPayments();
-                    runHomeScreen = true;//Pre added, delete if issues
+                    isPaymentEntry = true;
+                    fileWriter();
+                    isPaymentEntry = false;
                     break;
                 case 'L':
                     ledger();
@@ -130,7 +130,7 @@ public class Main {
                     runLedgerScreen = false;
                     break;
                 case 'A':
-                    //method
+                    fileReader();
                     break;
                 case 'D':
                     //method
@@ -215,22 +215,39 @@ public class Main {
 
     }
 
-    public static void fileWriterDeposits() {
+    public static void fileWriter() {
         isNotFirstTimeStartingApp = true;
         String file = "transactions.csv";
-        System.out.println("Enter your Deposit data in the following format: \n" +
-                "date|time|description|vendor|amount");
-        String userData = scan.nextLine();
-        try (FileWriter writer = new FileWriter(file, true)){
-            writer.write("Deposit|" + userData + "\n");
-            System.out.println("Deposit Data Added Successfully!");
+        try {
+            if (isDepositEntry) {
+                System.out.println("Enter your Deposit data in the following format: \n" +
+                        "date|time|description|vendor|amount");
+                String userData = scan.nextLine();
+                try (FileWriter writer = new FileWriter(file, true)) {
+                    writer.write("Deposit|" + userData + "\n");
+                    System.out.println("Deposit Data Added Successfully!");
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid input, try again");
+        }
+        if (isPaymentEntry) {
+            System.out.println("Enter your Payment data in the following format: \n" +
+                    "date|time|description|vendor|amount");
+            String userData = scan.nextLine();
+            try (FileWriter writer = new FileWriter(file, true)){
+                writer.write("Payment|" + userData + "\n");
+                System.out.println("Payment Data Added Successfully!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-
-    public static void fileWriterPayments() {
+    //Should just do if depo/payment true, then do
+   /* public static void fileWriterPayments() {
         isNotFirstTimeStartingApp = true;
         String file = "transactions.csv";
         System.out.println("Enter your Payment data in the following format: \n" +
@@ -242,6 +259,59 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }*/
+
+    public static void fileReader () {
+        String file = "transactions.csv";
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            String [] pipeSplit;
+            int entryCounter = 0;
+
+            while ((line = reader.readLine()) != null) {
+                entryCounter ++;
+                pipeSplit = line.split("\\|");
+                try {
+                    //DateTime date = pipeSplit[1];
+                //DateTime time = pipeSplit[2];
+                //DateTIme now = ?//Do I need a timestamp of when the entry was created???
+                double amount = Double.parseDouble(pipeSplit[5]);
+                } catch (NumberFormatException e){
+                    System.err.println("Invalid input: Amount must be a number");
+                }
+                String description = pipeSplit[3];
+                String vendor = pipeSplit[4];
+
+               /* Cant use an array unless there is a limit to how many entries can be make to be able to reverse loop
+               Need an ArrayList
+                for (int i = ; i < ; i++) {
+                //oof
+                }*/
+
+                System.out.println("Entry #" + entryCounter );
+
+                System.out.println(line);
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
+
+    public static void displayDeposits () {
+        //Pre added, delete if issues
+        //if (1amount < 0) {sout(Did you want to make a Payment instead?)
+        // if (yes) {take to payment() }
+
+        //try catch for invalid responses
+        //Use userData.split and make sure all splits have values?
+        // try {if (userData.split[4] == null???)
+        // } catch (IndexOOBE) { sout(Invalid try again)
+
+
+        //confirm amount while (response == no){ loop }
+        //then write to .csv
+    }
+
+
 
 }
