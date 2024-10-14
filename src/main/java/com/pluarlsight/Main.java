@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -15,6 +17,8 @@ public class Main {
     static boolean isNotFirstTimeStartingApp = false; //add to all menus
     static boolean isDepositEntry = false;
     static boolean isPaymentEntry = false;
+
+    static ArrayList<String> entries = new ArrayList<>();
 
     public static void main(String[] args) {
         //Welcome Message
@@ -66,7 +70,7 @@ public class Main {
                     //homeInput = scan.nextLine();
                     break;
             }
-        }catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();//?? Dont wanna throw an error message everytime getting out of Depo()
         }
     }
@@ -208,75 +212,74 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.err.println("Invalid input, try again");
             }
-
-
         }
-
-
     }
 
     public static void fileWriter() {
         isNotFirstTimeStartingApp = true;
         String file = "transactions.csv";
-        try {
-            if (isDepositEntry) {
-                System.out.println("Enter your Deposit data in the following format: \n" +
-                        "date|time|description|vendor|amount");
-                String userData = scan.nextLine();
-                try (FileWriter writer = new FileWriter(file, true)) {
-                    writer.write("Deposit|" + userData + "\n");
-                    System.out.println("Deposit Data Added Successfully!");
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        if (isDepositEntry) {
+            System.out.println("Enter your Deposit data in the following format: \n" +
+                    "date|time|description|vendor|amount");
+            String userData = scan.nextLine(); //make static?
+            //TODO split(); then setvars()
+            try (FileWriter writer = new FileWriter(file, true)) {
+                writer.write("Deposit|" + userData + "|Timestamp" + LocalDate.now() + "\n");
+                //TODO Add try{splitVaalidation()}catch{NumFormat
+                System.out.println("Deposit Data Added Successfully!");
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid input, try again");
+
         }
         if (isPaymentEntry) {
             System.out.println("Enter your Payment data in the following format: \n" +
                     "date|time|description|vendor|amount");
             String userData = scan.nextLine();
-            try (FileWriter writer = new FileWriter(file, true)){
-                writer.write("Payment|" + userData + "\n");
+            try (FileWriter writer = new FileWriter(file, true)) {
+                writer.write("Payment|" + userData + "|Timestamp" + LocalDate.now() + "\n");
                 System.out.println("Payment Data Added Successfully!");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-    //Should just do if depo/payment true, then do
-   /* public static void fileWriterPayments() {
-        isNotFirstTimeStartingApp = true;
-        String file = "transactions.csv";
-        System.out.println("Enter your Payment data in the following format: \n" +
-                "date|time|description|vendor|amount");
-        String userData = scan.nextLine();
-        try (FileWriter writer = new FileWriter(file, true)){
-            writer.write("Payment|" + userData + "\n");
-            System.out.println("Payment Data Added Successfully!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
-    public static void fileReader () {
+    public static void splitValidation() {//TODO Need Object to store the splits and use getvars()
+        //TODO Make ArrayList here so there can be valiadation, maybe have an
+        String line;
+        String[] pipeSplit;
+        try {
+            //LocalDate date = LocalDate.parse(pipeSplit[1]);
+           // LocalDate time = LocalDate.parse(pipeSplit[2]);
+            LocalDate entryTimeStamp = LocalDate.now();//Do I need a timestamp of when the entry was created???
+            //double amount = Double.parseDouble(pipeSplit[5]);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid input: Amount must be a number");
+        }
+
+
+    }
+
+    public static void fileReader() {
+        //TODO Make ArrayList
         String file = "transactions.csv";
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            String [] pipeSplit;
+            String[] pipeSplit;
             int entryCounter = 0;
 
             while ((line = reader.readLine()) != null) {
-                entryCounter ++;
+                entryCounter++;
                 pipeSplit = line.split("\\|");
                 try {
-                    //DateTime date = pipeSplit[1];
-                //DateTime time = pipeSplit[2];
-                //DateTIme now = ?//Do I need a timestamp of when the entry was created???
-                double amount = Double.parseDouble(pipeSplit[5]);
-                } catch (NumberFormatException e){
+                    LocalDate date = LocalDate.parse(pipeSplit[1]);
+                    LocalDate time = LocalDate.parse(pipeSplit[2]);
+                    LocalDate entryTimeStamp = LocalDate.now();//Do I need a timestamp of when the entry was created???
+                    double amount = Double.parseDouble(pipeSplit[5]);
+                } catch (NumberFormatException e) {
                     System.err.println("Invalid input: Amount must be a number");
                 }
                 String description = pipeSplit[3];
@@ -288,16 +291,16 @@ public class Main {
                 //oof
                 }*/
 
-                System.out.println("Entry #" + entryCounter );
+                System.out.println("Entry #" + entryCounter);
 
                 System.out.println(line);
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void displayDeposits () {
+    public static void displayDeposits() {
         //Pre added, delete if issues
         //if (1amount < 0) {sout(Did you want to make a Payment instead?)
         // if (yes) {take to payment() }
@@ -311,7 +314,6 @@ public class Main {
         //confirm amount while (response == no){ loop }
         //then write to .csv
     }
-
 
 
 }
