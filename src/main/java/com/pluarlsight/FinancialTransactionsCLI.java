@@ -6,10 +6,102 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
-public class Main {
+public class FinancialTransactionsCLI {
+    private String type;
+    private LocalDate date;
+    private LocalDate time;
+    private String description;
+    private String vendor;
+    private double amount;
+    private LocalDate timeStamp;
+
+    static ArrayList<FinancialTransactionsCLI> entries = new ArrayList<>();
+
+    public FinancialTransactionsCLI () {
+    }
+
+    public FinancialTransactionsCLI (String type, LocalDate date, LocalDate time, String description,
+                                     String vendor, double amount, LocalDate timeStamp) {
+        this.type = type;
+        this.date = date;
+        this.time = time;
+        this.description = description;
+        this.vendor = vendor;
+        this.amount = amount;
+        this.timeStamp = timeStamp;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalDate getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDate time) {
+        this.time = time;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public LocalDate getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(LocalDate timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public void addEntries (FinancialTransactionsCLI objectName) {
+        /*String userData = toString(setAmount(amount);
+        entries.add(objectName.setType(vendor) + "|" + objectName.setDate(date) + "|" + objectName.setType(time + "|" +
+                objectName.setDescription(description) + "|" + objectName.setVendor(vendor) + "|" +
+                objectName.setAmount(amount) + "|" + objectName.setTimeStamp(timeStamp));
+        */
+    }
+    //make toString, then convert to Data types?
+
+
+
+
+
     static Scanner scan = new Scanner(System.in);
     static boolean runHomeScreen = true;
     static boolean runLedgerScreen = true;
@@ -18,7 +110,6 @@ public class Main {
     static boolean isDepositEntry = false;
     static boolean isPaymentEntry = false;
 
-    static ArrayList<String> entries = new ArrayList<>();
 
     public static void main(String[] args) {
         //Welcome Message
