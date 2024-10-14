@@ -121,6 +121,8 @@ public class FinancialTransactionsCLI {
                 "P) Make a payment (debit)\n" +
                 "L) Ledger\n" +
                 "X) Exit\n");
+        //Pre Instantiating Object //Delete if issues
+        FinancialTransactionsCLI obj = new FinancialTransactionsCLI();
         //Home Menu Options
         while (runHomeScreen) {
             //Welcome Back message if coming back another menu
@@ -229,9 +231,11 @@ public class FinancialTransactionsCLI {
                     break;
                 case 'D':
                     //method
+                    //read then write if split[0].equals(depot), print
                     break;
                 case 'P':
                     //method
+                    //read then write if split[0].equals(depot), print
                     break;
                 case 'R':
                     reports();
@@ -311,12 +315,17 @@ public class FinancialTransactionsCLI {
         String file = "transactions.csv";
 
         if (isDepositEntry) {
+            String type = "Deposit";
             System.out.println("Enter your Deposit data in the following format: \n" +
                     "date|time|description|vendor|amount");
             String userData = scan.nextLine(); //make static?
             //TODO split(); then setvars()
+            //make this into a var inside val()? w/ if depo/pay
+            //may need a pre step of making Data types toString then adding them in here
+            //String finalDepo/PayEntry = toString("Deposit|" + userData + "|Timestamp: " + LocalDate.now() + "\n")
+
             try (FileWriter writer = new FileWriter(file, true)) {
-                writer.write("Deposit|" + userData + "|Timestamp" + LocalDate.now() + "\n");
+                writer.write(type + "|" + userData + "|Timestamp: " + LocalDate.now() + "\n");
                 //TODO Add try{splitVaalidation()}catch{NumFormat
                 System.out.println("Deposit Data Added Successfully!");
 
@@ -326,35 +335,45 @@ public class FinancialTransactionsCLI {
 
         }
         if (isPaymentEntry) {
+            String type = "Payment";
             System.out.println("Enter your Payment data in the following format: \n" +
-                    "date|time|description|vendor|amount");
+                    "date(YYYY-mm-dd)|time(HH:mm:ss)|description|vendor|amount");
             String userData = scan.nextLine();
             try (FileWriter writer = new FileWriter(file, true)) {
-                writer.write("Payment|" + userData + "|Timestamp" + LocalDate.now() + "\n");
+                writer.write(type + "|" + userData + "|Timestamp: " + LocalDate.now() + "\n");
                 System.out.println("Payment Data Added Successfully!");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        //TODO set vars here after val?
     }
 
-    public static void splitValidation() {//TODO Need Object to store the splits and use getvars()
-        //TODO Make ArrayList here so there can be valiadation, maybe have an
-        String line;
-        String[] pipeSplit;
+    public static String splitValidation(String userEntry, String type) {//Use FinancialTransactionsCLI object to store the splits and use getvars()
+        //add a while until user adds valid data?
+        String[] pipeSplit = userEntry.split("\\|");
+
+        LocalDate date;
+        LocalDate time;
+        LocalDate entryTimeStamp = LocalDate.now();//6
+        double amount = 0; //might cause issues for being fancy in err msg
         try {
-            //LocalDate date = LocalDate.parse(pipeSplit[1]);
-           // LocalDate time = LocalDate.parse(pipeSplit[2]);
-            LocalDate entryTimeStamp = LocalDate.now();//Do I need a timestamp of when the entry was created???
-            //double amount = Double.parseDouble(pipeSplit[5]);
+            date = LocalDate.parse(pipeSplit[1]);
+            //object.setDate(date);
+            time = LocalDate.parse(pipeSplit[2]);
+            //object.setTime(time);
+            //entryTimeStamp = LocalDate.now();//6
+            //object.setTimeStamp(entryTimeStamp);
+            amount = Double.parseDouble(pipeSplit[5]);
+            //object.setAmount(amount);
         } catch (NumberFormatException e) {
-            System.err.println("Invalid input: Amount must be a number");
+            System.err.println("Invalid input: " + amount + " must be a number");
         }
-
-
+        String validatedEntry = type + "|" + userEntry + "|" + entryTimeStamp;
+        return validatedEntry;
     }
 
-    public static void fileReader() {
+    public static String fileReader() {
         //TODO Make ArrayList
         String file = "transactions.csv";
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -375,7 +394,8 @@ public class FinancialTransactionsCLI {
                 }
                 String description = pipeSplit[3];
                 String vendor = pipeSplit[4];
-
+                //FinancialTransactionsCLI entry = new FinancialTransactionsCLI(setType(type));
+                //entries.add();
                /* Cant use an array unless there is a limit to how many entries can be make to be able to reverse loop
                Need an ArrayList
                 for (int i = ; i < ; i++) {
@@ -389,6 +409,8 @@ public class FinancialTransactionsCLI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        String validatedEntry = "type"  + "vem";
+        return validatedEntry;
     }
 
     public static void displayDeposits() {
