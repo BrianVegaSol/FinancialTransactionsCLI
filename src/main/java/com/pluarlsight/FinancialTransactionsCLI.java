@@ -8,10 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 
 //
 
@@ -295,22 +292,27 @@ public class FinancialTransactionsCLI {
                     case 1:
                         //method
                         //may need to turn a menu on/off
+                        //All months
                         break;
                     case 2:
                         //method
                         //may need to turn a menu on/off
+                        //just last month
                         break;
                     case 3:
                         //method
                         //may need to turn a menu on/off
+                        //all entries but by year
                         break;
                     case 4:
                         //method
                         //may need to turn a menu on/off
+                        //only previous year
                         break;
                     case 5:
                         //method
                         //may need to turn a menu on/off
+                        //filter a-z by vendor
                         break;
                     default:
                         System.out.println("Invalid number, try again");
@@ -414,10 +416,10 @@ public class FinancialTransactionsCLI {
                     double amount = Double.parseDouble(pipeSplit[5]);
                     transactions = new FinancialTransactionsCLI(type,date,timeNow, description, vendor, amount);
                     entries.add(transactions);
-                    System.out.println(transactions.getDate());
+                    /*System.out.println(transactions.getDate());
                     System.out.println(transactions.getTime());
                     System.out.println(transactions.getVendor());
-                    System.out.println(entries);
+                    System.out.println(entries);*/
 
                     /*for (ArrayList <FinancialTransactionsCLI> list : entries) {
                         transactions.toString();
@@ -442,13 +444,14 @@ public class FinancialTransactionsCLI {
                 //entries.add();
 
 
-                System.out.println("Entry #" + entryCounter);
+           //     System.out.println("Entry #" + entryCounter);
 
-                System.out.println(line);
+           //     System.out.println(line);
             }
+            sortTransactionsByAll(entries);
             for (int i = 0; i < entries.size(); i++) {
+             //   Collections.sort();
                 System.out.println(entries.get(i));
-
             }
 
 
@@ -457,8 +460,20 @@ public class FinancialTransactionsCLI {
         }
 
     }
+//
+//    public class DateComparator implements Comparator<FinancialTransactionsCLI> {
+//        @Override public int compare(FinancialTransactionsCLI t1, FinancialTransactionsCLI t2) {
+//            return t1.getDate().compareTo(t2.getDate()); // Ascending order } }
+//        }
 
-    public static void displayDeposits() {
+    //Generic example
+    //TODO Make time and date the same
+    public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
+        transactions.sort((line1, line2) -> line2.getDate().compareTo(line1.getDate()));
+    }
+
+
+   // public static void displayDeposits() {
         //Pre added, delete if issues
         //if (1amount < 0) {sout(Did you want to make a Payment instead?)
         // if (yes) {take to payment() }
@@ -471,7 +486,7 @@ public class FinancialTransactionsCLI {
 
         //confirm amount while (response == no){ loop }
         //then write to .csv
-    }
+   // }
 
 
 }
