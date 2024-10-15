@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
+//
+
 public class FinancialTransactionsCLI {
     private String type;
     private LocalDate date;
@@ -444,6 +446,12 @@ public class FinancialTransactionsCLI {
 
                 System.out.println(line);
             }
+            for (int i = 0; i < entries.size(); i++) {
+                System.out.println(entries.get(i));
+
+            }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
