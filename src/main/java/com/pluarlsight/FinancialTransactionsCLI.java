@@ -5,13 +5,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class FinancialTransactionsCLI {
     private String type;
     private LocalDate date;
-    private LocalDate time;
+    private LocalTime time;
     private String description;
     private String vendor;
     private double amount;
@@ -22,15 +27,15 @@ public class FinancialTransactionsCLI {
     public FinancialTransactionsCLI () {
     }
 
-    public FinancialTransactionsCLI (String type, LocalDate date, LocalDate time, String description,
-                                     String vendor, double amount, LocalDate timeStamp) {
+    public FinancialTransactionsCLI (String type, LocalDate date, LocalTime time, String description,
+                                     String vendor, double amount) {
         this.type = type;
         this.date = date;
         this.time = time;
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
-        this.timeStamp = timeStamp;
+        //this.timeStamp = timeStamp;
     }
 
     public String getType() {
@@ -49,11 +54,11 @@ public class FinancialTransactionsCLI {
         this.date = date;
     }
 
-    public LocalDate getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(LocalDate time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 
@@ -87,6 +92,11 @@ public class FinancialTransactionsCLI {
 
     public void setTimeStamp(LocalDate timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public String makeString (FinancialTransactionsCLI object, ArrayList<FinancialTransactionsCLI> list) {
+        return list.add(object.getType() + "|" + object.getDate() + "|" + object.getTime() + "|" + object.getDescription() + "|" +
+                object.getVendor() + "|" + object.getAmount());
     }
 
     public void addEntries (FinancialTransactionsCLI objectName) {
@@ -317,16 +327,14 @@ public class FinancialTransactionsCLI {
         if (isDepositEntry) {
             String type = "Deposit";
             System.out.println("Enter your Deposit data in the following format: \n" +
-                    "date|time|description|vendor|amount");
+                    "description|vendor|amount");
             String userData = scan.nextLine(); //make static?
             //TODO split(); then setvars()
             //make this into a var inside val()? w/ if depo/pay
             //may need a pre step of making Data types toString then adding them in here
             //String finalDepo/PayEntry = toString("Deposit|" + userData + "|Timestamp: " + LocalDate.now() + "\n")
-
             try (FileWriter writer = new FileWriter(file, true)) {
-                writer.write(type + "|" + userData + "|Timestamp: " + LocalDate.now() + "\n");
-                //TODO Add try{splitVaalidation()}catch{NumFormat
+                writer.write(splitValidation(userData,type) + "\n");
                 System.out.println("Deposit Data Added Successfully!");
 
             } catch (IOException e) {
@@ -340,7 +348,7 @@ public class FinancialTransactionsCLI {
                     "date(YYYY-mm-dd)|time(HH:mm:ss)|description|vendor|amount");
             String userData = scan.nextLine();
             try (FileWriter writer = new FileWriter(file, true)) {
-                writer.write(type + "|" + userData + "|Timestamp: " + LocalDate.now() + "\n");
+                writer.write(splitValidation(userData, type) + "\n");
                 System.out.println("Payment Data Added Successfully!");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -351,31 +359,39 @@ public class FinancialTransactionsCLI {
 
     public static String splitValidation(String userEntry, String type) {//Use FinancialTransactionsCLI object to store the splits and use getvars()
         //add a while until user adds valid data?
+        //TODO Add if amount < 0 ask if wanted to do Payment (y/n) and fix if wanted Depo
+        //TODO Make Payments with negative value abs(value) if type.equals "Payment" then abs(amount)
         String[] pipeSplit = userEntry.split("\\|");
 
-        LocalDate date;
-        LocalDate time;
-        LocalDate entryTimeStamp = LocalDate.now();//6
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String timeNow = time.format(formatter);
+        //LocalDate entryTimeStamp = LocalDate.now();//6
         double amount = 0; //might cause issues for being fancy in err msg
         try {
-            date = LocalDate.parse(pipeSplit[1]);
+            //date = LocalDate.parse(pipeSplit[0]);
             //object.setDate(date);
-            time = LocalDate.parse(pipeSplit[2]);
+            //time = LocalTime.parse(pipeSplit[1], DateTimeFormatter.ISO_LOCAL_TIME);
             //object.setTime(time);
             //entryTimeStamp = LocalDate.now();//6
             //object.setTimeStamp(entryTimeStamp);
-            amount = Double.parseDouble(pipeSplit[5]);
+            amount = Double.parseDouble(pipeSplit[4]);
             //object.setAmount(amount);
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid input: " + amount + " must be a number");
+        } catch (NumberFormatException | DateTimeParseException e) {
+            System.err.println("Invalid input: " + amount + " must be a number" +
+                    "\nEntry Failed, Returning to Main Menu");
+            //add boolean and while loops?
+            welcomeBackHomeMenu();//Delete if errors
         }
-        String validatedEntry = type + "|" + userEntry + "|" + entryTimeStamp;
+        String validatedEntry = type + "|" + date + "|" + timeNow + "|" + "|" + userEntry;
         return validatedEntry;
     }
 
-    public static String fileReader() {
+    public static void fileReader() {
         //TODO Make ArrayList
         String file = "transactions.csv";
+        FinancialTransactionsCLI transactions = new FinancialTransactionsCLI();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             String[] pipeSplit;
@@ -385,22 +401,34 @@ public class FinancialTransactionsCLI {
                 entryCounter++;
                 pipeSplit = line.split("\\|");
                 try {
+                    String type = pipeSplit[0];
                     LocalDate date = LocalDate.parse(pipeSplit[1]);
-                    LocalDate time = LocalDate.parse(pipeSplit[2]);
-                    LocalDate entryTimeStamp = LocalDate.now();//Do I need a timestamp of when the entry was created???
+                    LocalTime time = LocalTime.parse(pipeSplit[2]);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+                    LocalTime timeNow = LocalTime.parse(time.format(formatter));
+                    //LocalDate entryTimeStamp = LocalDate.now();//Do I need a timestamp of when the entry was created???
+                    String description = pipeSplit[3];
+                    String vendor = pipeSplit[4];
                     double amount = Double.parseDouble(pipeSplit[5]);
+                    transactions = new FinancialTransactionsCLI(type,date,timeNow, description, vendor, amount);
+                    entries.add(transactions);
+
                 } catch (NumberFormatException e) {
-                    System.err.println("Invalid input: Amount must be a number");
+                    System.err.println("Invalid entry retrieved. Contact Admin to Review .csv\nReturning to Main Menu");
                 }
-                String description = pipeSplit[3];
-                String vendor = pipeSplit[4];
-                //FinancialTransactionsCLI entry = new FinancialTransactionsCLI(setType(type));
-                //entries.add();
-               /* Cant use an array unless there is a limit to how many entries can be make to be able to reverse loop
-               Need an ArrayList
-                for (int i = ; i < ; i++) {
-                //oof
+
+                //might not work but added the empty entry constructor up top
+
+                //nooo
+                    /*entries.sort(Comparator.comparing(FinancialTransactionsCLI::getTime));
+                for (FinancialTransactionsCLI entry : entries) {
+                    System.out.println("Entry #" + entryCounter);
+                    System.out.println(entry);
                 }*/
+
+
+                //entries.add();
+
 
                 System.out.println("Entry #" + entryCounter);
 
@@ -409,8 +437,7 @@ public class FinancialTransactionsCLI {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String validatedEntry = "type"  + "vem";
-        return validatedEntry;
+
     }
 
     public static void displayDeposits() {
