@@ -93,10 +93,10 @@ public class FinancialTransactionsCLI {
     public void setTimeStamp(LocalDate timeStamp) {
         this.timeStamp = timeStamp;
     }
-
-    public String makeString (FinancialTransactionsCLI object, ArrayList<FinancialTransactionsCLI> list) {
-        return list.add(object.getType() + "|" + object.getDate() + "|" + object.getTime() + "|" + object.getDescription() + "|" +
-                object.getVendor() + "|" + object.getAmount());
+@Override
+    public String toString () {
+        return (type + "|" + date + "|" + time + "|" + description + "|" +
+                vendor + "|" + amount);
     }
 
     public void addEntries (FinancialTransactionsCLI objectName) {
@@ -412,6 +412,16 @@ public class FinancialTransactionsCLI {
                     double amount = Double.parseDouble(pipeSplit[5]);
                     transactions = new FinancialTransactionsCLI(type,date,timeNow, description, vendor, amount);
                     entries.add(transactions);
+                    System.out.println(transactions.getDate());
+                    System.out.println(transactions.getTime());
+                    System.out.println(transactions.getVendor());
+                    System.out.println(entries);
+
+                    /*for (ArrayList <FinancialTransactionsCLI> list : entries) {
+                        transactions.toString();
+                    }
+                    System.out.println(entries);*/
+                    //System.out.println(FinancialTransactionsCLI);
 
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid entry retrieved. Contact Admin to Review .csv\nReturning to Main Menu");
