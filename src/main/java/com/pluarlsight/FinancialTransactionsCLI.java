@@ -14,14 +14,6 @@ import java.util.*;
 //
 
 public class FinancialTransactionsCLI {
-    /*private String type;
-    private LocalDate date;
-    private LocalTime time;
-    private LocalDateTime dateTime;
-    private String description;
-    private String vendor;
-    private double amount;
-    private LocalDate timeStamp;*/
     private String type;
     private LocalDate date;
     private LocalTime time;
@@ -53,50 +45,6 @@ public class FinancialTransactionsCLI {
         this.vendor = vendor;
         this.amount = amount;
     }
-
-
-
-
-
-   /* FinancialTransactionsCLI(String type, String dateTimeString, String description, String vendor, double amount) {
-        this.type = type;
-        this.description = description;
-        this.vendor = vendor;
-        this.amount = amount;
-        // Parse the dateTimeString into LocalDateTime
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        this.dateTime = LocalDateTime.parse(dateTimeString, formatter);
-    }*/
-
-
-
-
-
-    /*public FinancialTransactionsCLI(String type, LocalDateTime dateTime, String description,
-                                    String vendor, double amount) {
-        this.type = type;
-        this.dateTime = dateTime;
-        this.description = description;
-        this.vendor = vendor;
-        this.amount = amount;
-    }*/
-
-    // Method to get the formatted dateTime as a String
-    public String getFormattedDateTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return dateTime.format(formatter);
-    }
-
-    /*public FinancialTransactionsCLI(String type, LocalDate date, LocalTime time, String description,
-                                    String vendor, double amount) {
-        this.type = type;
-        this.date = date;
-        this.time = time;
-        this.description = description;
-        this.vendor = vendor;
-        this.amount = amount;
-        //this.timeStamp = timeStamp;
-    }*/
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -167,16 +115,6 @@ public class FinancialTransactionsCLI {
         return (type + "|" + date + "|" + time + "|" + description + "|" +
                 vendor + "|" + amount);
     }
-
-    public void addEntries(FinancialTransactionsCLI objectName) {
-        /*String userData = toString(setAmount(amount);
-        entries.add(objectName.setType(vendor) + "|" + objectName.setDate(date) + "|" + objectName.setType(time + "|" +
-                objectName.setDescription(description) + "|" + objectName.setVendor(vendor) + "|" +
-                objectName.setAmount(amount) + "|" + objectName.setTimeStamp(timeStamp));
-        */
-    }
-    //make toString, then convert to Data types?
-
 
     static Scanner scan = new Scanner(System.in);
     static boolean runHomeScreen = true;
@@ -494,19 +432,11 @@ public class FinancialTransactionsCLI {
                 try {
                     //TODO Need to add this to Description
                     String type = pipeSplit[0];
-                    //TODO Merge into 1 DateTime and then split here
                     LocalDate date = LocalDate.parse(pipeSplit[1]);
                     LocalTime time = LocalTime.parse(pipeSplit[2]);
-
-
-                    /*String dateTime = pipeSplit[1] + " " + pipeSplit[2];
-                    LocalDateTime formdateTime = LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));*/
-                    //  formdateTime.toString();
-                    //LocalDate entryTimeStamp = LocalDate.now();//Do I need a timestamp of when the entry was created???
                     String description = pipeSplit[3];
                     String vendor = pipeSplit[4];
                     double amount = Double.parseDouble(pipeSplit[5]);
-                    //String type, LocalDate date, LocalTime time, String description, String vendor, double amount
                     transactions = new FinancialTransactionsCLI(type, date, time, description, vendor, amount);
                     entries.add(transactions);
                     if (isLedgerAll) {
@@ -552,8 +482,10 @@ public class FinancialTransactionsCLI {
             }
             //TODO Need to merge Date and Time from here on out
             if (isReportMonthDate) {
-                sortTransactionsByAll(entries);
+                sortTransactionsByMonth(entries);
                 for (int i = 0; i < entries.size(); i++) {
+                    //TODO Make Entry display Month Ex: Jan, Feb etc
+                    //getMonth can convert to format for text?
                     System.out.println("Entry #" + (i + 1));
                     System.out.println(entries.get(i));
                 }
@@ -562,7 +494,17 @@ public class FinancialTransactionsCLI {
 
 
             if (isReportPrevMonth) {
+                sortTransactionsByMonth(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    //TODO Make Entry display Month Ex: Jan, Feb etc
+                    //getMonth can convert to format for text?
+                   /* if (entries.get(i).getDate().getMonth() > LocalDate.now().compareTo() - 1) {
+                        System.out.println("Entry #" + (i + 1));
+                        System.out.println(entries.get(i));
+                    }*/
+                }
 
+                entries.clear();
             }
 
             if (isReportYearDate) {
@@ -600,6 +542,10 @@ public class FinancialTransactionsCLI {
     //TODO Make time and date the same
     public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
         transactions.sort((line1, line2) -> line2.getDateTime().compareTo(line1.getDateTime()));
+    }
+
+    public static void sortTransactionsByMonth(List<FinancialTransactionsCLI> transactions) {
+        transactions.sort(Comparator.comparing(line -> line.getDateTime().getMonth()));
     }
 
     /*public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
