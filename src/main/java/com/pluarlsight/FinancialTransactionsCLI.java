@@ -129,6 +129,7 @@ public class FinancialTransactionsCLI {
     static boolean isReportPrevMonth = false;
     static boolean isReportYearDate = false;
     static boolean isReportVendor = false;
+    static boolean isReportPrevYear = false;
 
 
     public static void main(String[] args) {
@@ -152,8 +153,6 @@ public class FinancialTransactionsCLI {
                 firstTimeSwitch();
             }
         }
-
-        //scan.close();
     }
 
     public static void firstTimeSwitch() {
@@ -180,17 +179,15 @@ public class FinancialTransactionsCLI {
                     break;
                 default:
                     System.out.println("Invalid input, try again");
-                    //homeInput = scan.nextLine();
                     break;
             }
         } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();//?? Dont wanna throw an error message everytime getting out of Depo()
+            e.printStackTrace();
         }
     }
 
     public static void welcomeBackHomeMenu() {
-        //IF THIS WHILE LOOP BREAKS STUFF REVERT TO STABLE BUILD
-        while (runHomeScreen) { //loop is creating an issue where l from last input isnt being eaten so
+        while (runHomeScreen) {
             System.out.println("Welcome Back!\n" +
                     "\nHome Screen\n" +
                     "-----------\n" +
@@ -221,14 +218,12 @@ public class FinancialTransactionsCLI {
                     break;
                 default:
                     System.out.println("Invalid input, try again");
-                    //backHomeInput = scan.nextLine(); //Guess this isnt being read since the switch isnt in a loop?
                     break;
             }
         }
     }
 
     public static void ledger() {
-        //runHomeScreen = false; // Is this necessary? Doesnt look like it is, tempted to delete this
         runLedgerScreen = true;
         isNotFirstTimeStartingApp = true;
 
@@ -255,20 +250,17 @@ public class FinancialTransactionsCLI {
                     isLedgerDeposit = true;
                     fileReader();
                     isLedgerDeposit = false;
-                    //read then write if split[0].equals(depot), print
                     break;
                 case 'P':
                     isLedgerPayment = true;
                     fileReader();
                     isLedgerPayment = false;
-                    //read then write if split[0].equals(depot), print
                     break;
                 case 'R':
                     reports();
                     break;
                 default:
                     System.out.println("Invalid input, try again");
-                    //ledgerInput = scan.nextLine(); //OPS NEVER ADDED SCAN HERE, CAUSED AN INFINITE LOOP
             }
 
         }
@@ -313,23 +305,27 @@ public class FinancialTransactionsCLI {
                         //All months
                         break;
                     case 2:
-                        //method
-                        //may need to turn a menu on/off
+                        isReportPrevMonth = true;
+                        fileReader();
+                        isReportPrevMonth = false;
                         //just last month
                         break;
                     case 3:
-                        //method
-                        //may need to turn a menu on/off
+                        isReportYearDate = true;
+                        fileReader();
+                        isReportYearDate = false;
                         //all entries but by year
                         break;
                     case 4:
-                        //method
-                        //may need to turn a menu on/off
+                        isReportPrevYear = true;
+                        fileReader();
+                        isReportPrevYear = false;
                         //only previous year
                         break;
                     case 5:
-                        //method
-                        //may need to turn a menu on/off
+                        isReportVendor = true;
+                        fileReader();
+                        isReportVendor = false;
                         //filter a-z by vendor
                         break;
                     default:
@@ -341,7 +337,7 @@ public class FinancialTransactionsCLI {
             }
         }
     }
-
+    //Used for Writing to .csv
     public static void fileWriter() {
         isNotFirstTimeStartingApp = true;
         String file = "transactions.csv";
@@ -350,11 +346,7 @@ public class FinancialTransactionsCLI {
             String type = "Deposit";
             System.out.println("Enter your Deposit data in the following format: \n" +
                     "description|vendor|amount");
-            String userData = scan.nextLine(); //make static?
-            //TODO split(); then setvars()
-            //make this into a var inside val()? w/ if depo/pay
-            //may need a pre step of making Data types toString then adding them in here
-            //String finalDepo/PayEntry = toString("Deposit|" + userData + "|Timestamp: " + LocalDate.now() + "\n")
+            String userData = scan.nextLine();
             try (FileWriter writer = new FileWriter(file, true)) {
                 writer.write(splitValidation(userData, type) + "\n");
                 System.out.println("Deposit Data Added Successfully!");
@@ -379,7 +371,7 @@ public class FinancialTransactionsCLI {
         //TODO set vars here after val?
     }
 
-    public static String splitValidation(String userEntry, String type) {//Use FinancialTransactionsCLI object to store the splits and use getvars()
+    public static String splitValidation(String userEntry, String type) {
         //add a while until user adds valid data?
         //TODO Add if amount < 0 ask if wanted to do Payment (y/n) and fix if wanted Depo
         //TODO Make Payments with negative value abs(value) if type.equals "Payment" then abs(amount)
@@ -390,27 +382,19 @@ public class FinancialTransactionsCLI {
         LocalTime time = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         String timeNow = time.format(formatter);
-        //LocalDate entryTimeStamp = LocalDate.now();//6
-        double amount = 0; //might cause issues for being fancy in err msg
+        double amount = 0;
         try {
-            //date = LocalDate.parse(pipeSplit[0]);
-            //object.setDate(date);
-            //time = LocalTime.parse(pipeSplit[1], DateTimeFormatter.ISO_LOCAL_TIME);
-            //object.setTime(time);
-            //entryTimeStamp = LocalDate.now();//6
-            //object.setTimeStamp(entryTimeStamp);
             amount = Double.parseDouble(pipeSplit[4]);
-            //object.setAmount(amount);
         } catch (NumberFormatException | DateTimeParseException e) {
             System.err.println("Invalid input: " + amount + " must be a number" +
                     "\nEntry Failed, Returning to Main Menu");
             //add boolean and while loops?
-            welcomeBackHomeMenu();//Delete if errors
+            welcomeBackHomeMenu();
         }
         String validatedEntry = type + "|" + date + "|" + timeNow + "|" + "|" + userEntry;
         return validatedEntry;
     }
-
+    //Used for Ledger and Reports Display
     public static void fileReader() {
         //TODO Make ArrayList
         String file = "transactions.csv";
@@ -438,10 +422,6 @@ public class FinancialTransactionsCLI {
                     double amount = Double.parseDouble(pipeSplit[5]);
                     transactions = new FinancialTransactionsCLI(type, date, timeNow, description, vendor, amount);
                     entries.add(transactions);
-                    /*System.out.println(transactions.getDate());
-                    System.out.println(transactions.getTime());
-                    System.out.println(transactions.getVendor());
-                    System.out.println(entries);*/
                     if (isLedgerAll) {
                         all.add(line);
                     }
@@ -450,17 +430,14 @@ public class FinancialTransactionsCLI {
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid entry retrieved. Contact Admin to Review .csv\nReturning to Main Menu");
                 }
-
-                //     System.out.println("Entry #" + entryCounter);
-
-                //     System.out.println(line);
             }
+
             if (isLedgerAll) {
                 for (int i = all.size() - 1; i > -1; i--) {
                     System.out.println("Entry #" + (all.size() - i));
                     System.out.println(all.get(i));
-                    entries.clear();
                 }
+                    entries.clear();
             }
 
             if (isLedgerDeposit) {
@@ -472,6 +449,7 @@ public class FinancialTransactionsCLI {
                     }
 
                 }
+                entries.clear();
             }
 
             if (isLedgerPayment) {
@@ -483,17 +461,34 @@ public class FinancialTransactionsCLI {
                     }
 
                 }
+                entries.clear();
             }
 
+            if (isReportMonthDate){
+
+            }
+
+            if (isReportPrevMonth){
+
+            }
 
             if (isReportYearDate) {
-
                 sortTransactionsByAll(entries);
                 for (int i = 0; i < entries.size(); i++) {
-                    System.out.println("Entry #" + entryCounter);
+                    System.out.println("Entry #" + (i + 1));
                     System.out.println(entries.get(i));
                 }
+                entries.clear();
             }
+
+            if (isReportPrevYear){
+
+            }
+
+            if (isReportVendor) {
+
+            }
+
 
 
         } catch (IOException e) {
