@@ -14,6 +14,14 @@ import java.util.*;
 //
 
 public class FinancialTransactionsCLI {
+    /*private String type;
+    private LocalDate date;
+    private LocalTime time;
+    private LocalDateTime dateTime;
+    private String description;
+    private String vendor;
+    private double amount;
+    private LocalDate timeStamp;*/
     private String type;
     private LocalDate date;
     private LocalTime time;
@@ -21,7 +29,7 @@ public class FinancialTransactionsCLI {
     private String description;
     private String vendor;
     private double amount;
-    private LocalDate timeStamp;
+    private LocalDateTime timestamp;
 
     static ArrayList<FinancialTransactionsCLI> entries = new ArrayList<>();
 
@@ -34,16 +42,52 @@ public class FinancialTransactionsCLI {
         this.amount = amount;
     }
 
-    public FinancialTransactionsCLI(String type, LocalDateTime dateTime, String description,
+
+    // Constructor
+    public FinancialTransactionsCLI(String type, LocalDate date, LocalTime time, String description, String vendor, double amount) {
+        this.type = type;
+        this.date = date;
+        this.time = time;
+        this.dateTime = LocalDateTime.of(date, time); // Combine date and time
+        this.description = description;
+        this.vendor = vendor;
+        this.amount = amount;
+    }
+
+
+
+
+
+   /* FinancialTransactionsCLI(String type, String dateTimeString, String description, String vendor, double amount) {
+        this.type = type;
+        this.description = description;
+        this.vendor = vendor;
+        this.amount = amount;
+        // Parse the dateTimeString into LocalDateTime
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        this.dateTime = LocalDateTime.parse(dateTimeString, formatter);
+    }*/
+
+
+
+
+
+    /*public FinancialTransactionsCLI(String type, LocalDateTime dateTime, String description,
                                     String vendor, double amount) {
         this.type = type;
         this.dateTime = dateTime;
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
+    }*/
+
+    // Method to get the formatted dateTime as a String
+    public String getFormattedDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return dateTime.format(formatter);
     }
 
-    public FinancialTransactionsCLI(String type, LocalDate date, LocalTime time, String description,
+    /*public FinancialTransactionsCLI(String type, LocalDate date, LocalTime time, String description,
                                     String vendor, double amount) {
         this.type = type;
         this.date = date;
@@ -52,6 +96,14 @@ public class FinancialTransactionsCLI {
         this.vendor = vendor;
         this.amount = amount;
         //this.timeStamp = timeStamp;
+    }*/
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getType() {
@@ -102,12 +154,12 @@ public class FinancialTransactionsCLI {
         this.amount = amount;
     }
 
-    public LocalDate getTimeStamp() {
-        return timeStamp;
+    public LocalDateTime getTimeStamp() {
+        return timestamp;
     }
 
     public void setTimeStamp(LocalDate timeStamp) {
-        this.timeStamp = timeStamp;
+        this.timestamp = timestamp;
     }
 
     @Override
@@ -133,6 +185,7 @@ public class FinancialTransactionsCLI {
     static boolean isNotFirstTimeStartingApp = false; //add to all menus
     static boolean isDepositEntry = false;
     static boolean isPaymentEntry = false;
+    static boolean isNotDeposit = false;
     static boolean isLedgerAll = false;
     static boolean isLedgerDeposit = false;
     static boolean isLedgerPayment = false;
@@ -348,6 +401,7 @@ public class FinancialTransactionsCLI {
             }
         }
     }
+
     //Used for Writing to .csv
     //TODO Work on cleaning up validation
     public static void fileWriter() {
@@ -361,8 +415,11 @@ public class FinancialTransactionsCLI {
             String userData = scan.nextLine();
             try (FileWriter writer = new FileWriter(file, true)) {
                 writer.write(splitValidation(userData, type) + "\n");
-                System.out.println("Deposit Data Added Successfully!");
-
+                if (isNotDeposit) {
+                    System.out.println("Payment Data Added Successfully!");
+                } else {
+                    System.out.println("Deposit Data Added Successfully!");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -390,25 +447,39 @@ public class FinancialTransactionsCLI {
         //TODO do while {Continue
         String[] pipeSplit = userEntry.split("\\|");
         //
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String timeNow = time.format(formatter);
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm:ss");
+        String formDateTime = dateTime.format(formatter);
         double amount = 0;
         try {
-            amount = Double.parseDouble(pipeSplit[4]);
+            amount = Double.parseDouble(pipeSplit[2]);
+            if (amount > 0 && type.equals("Payment")) {
+                amount *= -1;
+            }
+            if (amount < 0 && type.equals("Deposit")) {
+                System.out.println("Amount is negative\n" +
+                        "Did you want to make a Payment instead? (y/n)");
+                Scanner scanner = new Scanner(System.in);
+                char response = scanner.next().charAt(0);
+                if (Character.toUpperCase(response) == 'Y') {
+                    type = "Payment";
+                    isNotDeposit = true;
+                } else {
+                    amount = Math.abs(amount);
+                }
+            }
         } catch (NumberFormatException | DateTimeParseException e) {
             System.err.println("Invalid input: " + amount + " must be a number" +
                     "\nEntry Failed, Returning to Main Menu");
             //add boolean and while loops?
             welcomeBackHomeMenu();
         }
-        String validatedEntry = type + "|" + date + "|" + timeNow + "|" + "|" + userEntry;
+        String validatedEntry = type + "|" + formDateTime + "|" + userEntry;
         return validatedEntry;
     }
+
     //Used for Ledger and Reports Display
     public static void fileReader() {
-        //TODO Make ArrayList
         String file = "transactions.csv";
         FinancialTransactionsCLI transactions = new FinancialTransactionsCLI();
         ArrayList<String> all = new ArrayList<>();
@@ -426,13 +497,17 @@ public class FinancialTransactionsCLI {
                     //TODO Merge into 1 DateTime and then split here
                     LocalDate date = LocalDate.parse(pipeSplit[1]);
                     LocalTime time = LocalTime.parse(pipeSplit[2]);
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-                    LocalTime timeNow = LocalTime.parse(time.format(formatter));
+
+
+                    /*String dateTime = pipeSplit[1] + " " + pipeSplit[2];
+                    LocalDateTime formdateTime = LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));*/
+                    //  formdateTime.toString();
                     //LocalDate entryTimeStamp = LocalDate.now();//Do I need a timestamp of when the entry was created???
                     String description = pipeSplit[3];
                     String vendor = pipeSplit[4];
                     double amount = Double.parseDouble(pipeSplit[5]);
-                    transactions = new FinancialTransactionsCLI(type, date, timeNow, description, vendor, amount);
+                    //String type, LocalDate date, LocalTime time, String description, String vendor, double amount
+                    transactions = new FinancialTransactionsCLI(type, date, time, description, vendor, amount);
                     entries.add(transactions);
                     if (isLedgerAll) {
                         all.add(line);
@@ -449,7 +524,7 @@ public class FinancialTransactionsCLI {
                     System.out.println("Entry #" + (all.size() - i));
                     System.out.println(all.get(i));
                 }
-                    entries.clear();
+                entries.clear();
             }
 
             if (isLedgerDeposit) {
@@ -476,7 +551,7 @@ public class FinancialTransactionsCLI {
                 entries.clear();
             }
             //TODO Need to merge Date and Time from here on out
-            if (isReportMonthDate){
+            if (isReportMonthDate) {
                 sortTransactionsByAll(entries);
                 for (int i = 0; i < entries.size(); i++) {
                     System.out.println("Entry #" + (i + 1));
@@ -486,7 +561,7 @@ public class FinancialTransactionsCLI {
             }
 
 
-            if (isReportPrevMonth){
+            if (isReportPrevMonth) {
 
             }
 
@@ -499,14 +574,13 @@ public class FinancialTransactionsCLI {
                 entries.clear();
             }
 
-            if (isReportPrevYear){
+            if (isReportPrevYear) {
 
             }
 
             if (isReportVendor) {
 
             }
-
 
 
         } catch (IOException e) {
@@ -525,6 +599,10 @@ public class FinancialTransactionsCLI {
     //Generic for sorting
     //TODO Make time and date the same
     public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
-        transactions.sort((line1, line2) -> line2.getDate().compareTo(line1.getDate()));
+        transactions.sort((line1, line2) -> line2.getDateTime().compareTo(line1.getDateTime()));
     }
+
+    /*public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
+        transactions.sort((line1, line2) -> line2.getDate().compareTo(line1.getDate()));
+    }*/
 }
