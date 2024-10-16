@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -16,6 +17,7 @@ public class FinancialTransactionsCLI {
     private String type;
     private LocalDate date;
     private LocalTime time;
+    private LocalDateTime dateTime;
     private String description;
     private String vendor;
     private double amount;
@@ -27,6 +29,15 @@ public class FinancialTransactionsCLI {
         this.type = type;
         this.date = date;
         this.time = time;
+        this.description = description;
+        this.vendor = vendor;
+        this.amount = amount;
+    }
+
+    public FinancialTransactionsCLI(String type, LocalDateTime dateTime, String description,
+                                    String vendor, double amount) {
+        this.type = type;
+        this.dateTime = dateTime;
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
@@ -338,6 +349,7 @@ public class FinancialTransactionsCLI {
         }
     }
     //Used for Writing to .csv
+    //TODO Work on cleaning up validation
     public static void fileWriter() {
         isNotFirstTimeStartingApp = true;
         String file = "transactions.csv";
@@ -359,7 +371,7 @@ public class FinancialTransactionsCLI {
         if (isPaymentEntry) {
             String type = "Payment";
             System.out.println("Enter your Payment data in the following format: \n" +
-                    "date(YYYY-mm-dd)|time(HH:mm:ss)|description|vendor|amount");
+                    "description|vendor|amount");
             String userData = scan.nextLine();
             try (FileWriter writer = new FileWriter(file, true)) {
                 writer.write(splitValidation(userData, type) + "\n");
@@ -368,7 +380,7 @@ public class FinancialTransactionsCLI {
                 e.printStackTrace();
             }
         }
-        //TODO set vars here after val?
+
     }
 
     public static String splitValidation(String userEntry, String type) {
@@ -377,7 +389,7 @@ public class FinancialTransactionsCLI {
         //TODO Make Payments with negative value abs(value) if type.equals "Payment" then abs(amount)
         //TODO do while {Continue
         String[] pipeSplit = userEntry.split("\\|");
-
+        //
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -463,10 +475,16 @@ public class FinancialTransactionsCLI {
                 }
                 entries.clear();
             }
-
+            //TODO Need to merge Date and Time from here on out
             if (isReportMonthDate){
-
+                sortTransactionsByAll(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
+                }
+                entries.clear();
             }
+
 
             if (isReportPrevMonth){
 
