@@ -23,11 +23,17 @@ public class FinancialTransactionsCLI {
 
     static ArrayList<FinancialTransactionsCLI> entries = new ArrayList<>();
 
-    public FinancialTransactionsCLI () {
+    public FinancialTransactionsCLI() {
+        this.type = type;
+        this.date = date;
+        this.time = time;
+        this.description = description;
+        this.vendor = vendor;
+        this.amount = amount;
     }
 
-    public FinancialTransactionsCLI (String type, LocalDate date, LocalTime time, String description,
-                                     String vendor, double amount) {
+    public FinancialTransactionsCLI(String type, LocalDate date, LocalTime time, String description,
+                                    String vendor, double amount) {
         this.type = type;
         this.date = date;
         this.time = time;
@@ -92,13 +98,14 @@ public class FinancialTransactionsCLI {
     public void setTimeStamp(LocalDate timeStamp) {
         this.timeStamp = timeStamp;
     }
-@Override
-    public String toString () {
+
+    @Override
+    public String toString() {
         return (type + "|" + date + "|" + time + "|" + description + "|" +
                 vendor + "|" + amount);
     }
 
-    public void addEntries (FinancialTransactionsCLI objectName) {
+    public void addEntries(FinancialTransactionsCLI objectName) {
         /*String userData = toString(setAmount(amount);
         entries.add(objectName.setType(vendor) + "|" + objectName.setDate(date) + "|" + objectName.setType(time + "|" +
                 objectName.setDescription(description) + "|" + objectName.setVendor(vendor) + "|" +
@@ -108,9 +115,6 @@ public class FinancialTransactionsCLI {
     //make toString, then convert to Data types?
 
 
-
-
-
     static Scanner scan = new Scanner(System.in);
     static boolean runHomeScreen = true;
     static boolean runLedgerScreen = true;
@@ -118,6 +122,13 @@ public class FinancialTransactionsCLI {
     static boolean isNotFirstTimeStartingApp = false; //add to all menus
     static boolean isDepositEntry = false;
     static boolean isPaymentEntry = false;
+    static boolean isLedgerAll = false;
+    static boolean isLedgerDeposit = false;
+    static boolean isLedgerPayment = false;
+    static boolean isReportMonthDate = false;
+    static boolean isReportPrevMonth = false;
+    static boolean isReportYearDate = false;
+    static boolean isReportVendor = false;
 
 
     public static void main(String[] args) {
@@ -236,14 +247,20 @@ public class FinancialTransactionsCLI {
                     runLedgerScreen = false;
                     break;
                 case 'A':
+                    isLedgerAll = true;
                     fileReader();
+                    isLedgerAll = false;
                     break;
                 case 'D':
-                    //method
+                    isLedgerDeposit = true;
+                    fileReader();
+                    isLedgerDeposit = false;
                     //read then write if split[0].equals(depot), print
                     break;
                 case 'P':
-                    //method
+                    isLedgerPayment = true;
+                    fileReader();
+                    isLedgerPayment = false;
                     //read then write if split[0].equals(depot), print
                     break;
                 case 'R':
@@ -290,8 +307,9 @@ public class FinancialTransactionsCLI {
                         runLedgerScreen = true;
                         break;
                     case 1:
-                        //method
-                        //may need to turn a menu on/off
+                        isReportMonthDate = true;
+                        fileReader();
+                        isReportMonthDate = false;
                         //All months
                         break;
                     case 2:
@@ -338,7 +356,7 @@ public class FinancialTransactionsCLI {
             //may need a pre step of making Data types toString then adding them in here
             //String finalDepo/PayEntry = toString("Deposit|" + userData + "|Timestamp: " + LocalDate.now() + "\n")
             try (FileWriter writer = new FileWriter(file, true)) {
-                writer.write(splitValidation(userData,type) + "\n");
+                writer.write(splitValidation(userData, type) + "\n");
                 System.out.println("Deposit Data Added Successfully!");
 
             } catch (IOException e) {
@@ -365,6 +383,7 @@ public class FinancialTransactionsCLI {
         //add a while until user adds valid data?
         //TODO Add if amount < 0 ask if wanted to do Payment (y/n) and fix if wanted Depo
         //TODO Make Payments with negative value abs(value) if type.equals "Payment" then abs(amount)
+        //TODO do while {Continue
         String[] pipeSplit = userEntry.split("\\|");
 
         LocalDate date = LocalDate.now();
@@ -396,6 +415,7 @@ public class FinancialTransactionsCLI {
         //TODO Make ArrayList
         String file = "transactions.csv";
         FinancialTransactionsCLI transactions = new FinancialTransactionsCLI();
+        ArrayList<String> all = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             String[] pipeSplit;
@@ -405,7 +425,9 @@ public class FinancialTransactionsCLI {
                 entryCounter++;
                 pipeSplit = line.split("\\|");
                 try {
+                    //TODO Need to add this to Description
                     String type = pipeSplit[0];
+                    //TODO Merge into 1 DateTime and then split here
                     LocalDate date = LocalDate.parse(pipeSplit[1]);
                     LocalTime time = LocalTime.parse(pipeSplit[2]);
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -414,44 +436,63 @@ public class FinancialTransactionsCLI {
                     String description = pipeSplit[3];
                     String vendor = pipeSplit[4];
                     double amount = Double.parseDouble(pipeSplit[5]);
-                    transactions = new FinancialTransactionsCLI(type,date,timeNow, description, vendor, amount);
+                    transactions = new FinancialTransactionsCLI(type, date, timeNow, description, vendor, amount);
                     entries.add(transactions);
                     /*System.out.println(transactions.getDate());
                     System.out.println(transactions.getTime());
                     System.out.println(transactions.getVendor());
                     System.out.println(entries);*/
-
-                    /*for (ArrayList <FinancialTransactionsCLI> list : entries) {
-                        transactions.toString();
+                    if (isLedgerAll) {
+                        all.add(line);
                     }
-                    System.out.println(entries);*/
-                    //System.out.println(FinancialTransactionsCLI);
+
 
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid entry retrieved. Contact Admin to Review .csv\nReturning to Main Menu");
                 }
 
-                //might not work but added the empty entry constructor up top
+                //     System.out.println("Entry #" + entryCounter);
 
-                //nooo
-                    /*entries.sort(Comparator.comparing(FinancialTransactionsCLI::getTime));
-                for (FinancialTransactionsCLI entry : entries) {
-                    System.out.println("Entry #" + entryCounter);
-                    System.out.println(entry);
-                }*/
-
-
-                //entries.add();
-
-
-           //     System.out.println("Entry #" + entryCounter);
-
-           //     System.out.println(line);
+                //     System.out.println(line);
             }
-            sortTransactionsByAll(entries);
-            for (int i = 0; i < entries.size(); i++) {
-             //   Collections.sort();
-                System.out.println(entries.get(i));
+            if (isLedgerAll) {
+                for (int i = all.size() - 1; i > -1; i--) {
+                    System.out.println("Entry #" + (all.size() - i));
+                    System.out.println(all.get(i));
+                    entries.clear();
+                }
+            }
+
+            if (isLedgerDeposit) {
+                sortTransactionsByAll(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    if (entries.get(i).getType().equals("Deposit")) {
+                        System.out.println("Entry #" + (i + 1));
+                        System.out.println(entries.get(i));
+                    }
+
+                }
+            }
+
+            if (isLedgerPayment) {
+                sortTransactionsByAll(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    if (entries.get(i).getType().equals("Payment")) {
+                        System.out.println("Entry #" + (i + 1));
+                        System.out.println(entries.get(i));
+                    }
+
+                }
+            }
+
+
+            if (isReportYearDate) {
+
+                sortTransactionsByAll(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    System.out.println("Entry #" + entryCounter);
+                    System.out.println(entries.get(i));
+                }
             }
 
 
@@ -460,33 +501,17 @@ public class FinancialTransactionsCLI {
         }
 
     }
-//
-//    public class DateComparator implements Comparator<FinancialTransactionsCLI> {
-//        @Override public int compare(FinancialTransactionsCLI t1, FinancialTransactionsCLI t2) {
-//            return t1.getDate().compareTo(t2.getDate()); // Ascending order } }
-//        }
-
     //Generic example
+    /*public class DateComparator implements Comparator<FinancialTransactionsCLI> {
+        @Override
+        public int compare(FinancialTransactionsCLI t1, FinancialTransactionsCLI t2) {
+            return t1.getDate().compareTo(t2.getDate()); // Ascending order } }
+        }
+    }*/
+
+    //Generic for sorting
     //TODO Make time and date the same
     public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
         transactions.sort((line1, line2) -> line2.getDate().compareTo(line1.getDate()));
     }
-
-
-   // public static void displayDeposits() {
-        //Pre added, delete if issues
-        //if (1amount < 0) {sout(Did you want to make a Payment instead?)
-        // if (yes) {take to payment() }
-
-        //try catch for invalid responses
-        //Use userData.split and make sure all splits have values?
-        // try {if (userData.split[4] == null???)
-        // } catch (IndexOOBE) { sout(Invalid try again)
-
-
-        //confirm amount while (response == no){ loop }
-        //then write to .csv
-   // }
-
-
 }
