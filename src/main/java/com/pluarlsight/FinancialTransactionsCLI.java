@@ -492,7 +492,7 @@ public class FinancialTransactionsCLI {
                 entries.clear();
             }
 
-
+            //TODO Refuses to be called
             if (isReportPrevMonth) {
                 sortTransactionsByMonth(entries);
                 for (int i = 0; i < entries.size(); i++) {
@@ -518,6 +518,7 @@ public class FinancialTransactionsCLI {
                 entries.clear();
             }
 
+            //TODO Works somewhat, displays other entries too tho :(
             if (isReportPrevYear) {
                 sortTransactionsByAll(entries);
                 for (int i = 0; i < entries.size(); i++) {
