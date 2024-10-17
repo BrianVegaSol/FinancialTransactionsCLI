@@ -267,18 +267,19 @@ public class FinancialTransactionsCLI {
 
         }
     }
+
     public static void reports() {
         runReportsMenu = true;
         while (runReportsMenu) {
-        System.out.println("Welcome to the Reports Menu\n" +
-                "\nInput one of the following to start searching!\n" +
-                "1) Month To Date\n" +
-                "2) Previous Month\n" +
-                "3) Year To Date\n" +
-                "4) Previous Year\n" +
-                "5) Search By Vendor\n" +
-                "0) Back\n" +
-                "H) Home");
+            System.out.println("Welcome to the Reports Menu\n" +
+                    "\nInput one of the following to start searching!\n" +
+                    "1) Month To Date\n" +
+                    "2) Previous Month\n" +
+                    "3) Year To Date\n" +
+                    "4) Previous Year\n" +
+                    "5) Search By Vendor\n" +
+                    "0) Back\n" +
+                    "H) Home");
             String reportStringInput = scan.nextLine();
             //Catch index errors for if()
             try {
@@ -482,10 +483,46 @@ public class FinancialTransactionsCLI {
             if (isReportMonthDate) {
                 sortTransactionsByMonth(entries);
                 for (int i = 0; i < entries.size(); i++) {
-                    //TODO Make Entry display Month Ex: Jan, Feb etc
-                    //getMonth can convert to format for text?
-                    System.out.println("Entry #" + (i + 1));
-                    System.out.println(entries.get(i));
+                    switch (entries.get(i).getDateTime().getMonthValue()) {
+                        case 1:
+                            System.out.println("January Entry");
+                            break;
+                        case 2:
+                            System.out.println("February Entry");
+                            break;
+                        case 3:
+                            System.out.println("March Entry");
+                            break;
+                        case 4:
+                            System.out.println("April Entry");
+                            break;
+                        case 5:
+                            System.out.println("May Entry");
+                            break;
+                        case 6:
+                            System.out.println("June Entry");
+                            break;
+                        case 7:
+                            System.out.println("July Entry");
+                            break;
+                        case 8:
+                            System.out.println("August Entry");
+                            break;
+                        case 9:
+                            System.out.println("September Entries");
+                            break;
+                        case 10:
+                            System.out.println("October Entries");
+                            break;
+                        case 11:
+                            System.out.println("November Entries");
+                            break;
+                        case 12:
+                            System.out.println("December Entries");
+                            break;
+
+                    }
+                    System.out.println(entries.get(i) + "\n");
                 }
                 entries.clear();
             }
@@ -493,14 +530,55 @@ public class FinancialTransactionsCLI {
             //Refuses to be called LOL THERE'S NO PREV MONTH ENTRY TO DISPLAY THIS WORKS PERFECTLY!!!
             if (isReportPrevMonth) {
                 sortTransactionsByMonth(entries);
+                int month = LocalDateTime.now().getMonthValue();
+                switch (month - 1) {
+                    case 1:
+                        System.out.println("January Entries");
+                        break;
+                    case 2:
+                        System.out.println("February Entries");
+                        break;
+                    case 3:
+                        System.out.println("March Entries");
+                        break;
+                    case 4:
+                        System.out.println("April Entries");
+                        break;
+                    case 5:
+                        System.out.println("May Entries");
+                        break;
+                    case 6:
+                        System.out.println("June Entries");
+                        break;
+                    case 7:
+                        System.out.println("July Entries");
+                        break;
+                    case 8:
+                        System.out.println("August Entries");
+                        break;
+                    case 9:
+                        System.out.println("September Entries");
+                        break;
+                    case 10:
+                        System.out.println("October Entries");
+                        break;
+                    case 11:
+                        System.out.println("November Entries");
+                        break;
+                    case 12:
+                        System.out.println("December Entries");
+                        break;
+
+                }
+
                 for (int i = 0; i < entries.size(); i++) {
                     //TODO Make Entry display Month Ex: Jan, Feb etc
                     //getMonth can convert to format for text?
                     int prevMonth = LocalDateTime.now().getMonthValue() - 1;
                     if (entries.get(i).dateTime.getMonthValue() == prevMonth) {
-                        if (entries.get(i).dateTime.getYear() == LocalDate.now().getYear())
-                            System.out.println("Entry #" + (i + 1));
-                        System.out.println(entries.get(i));
+                        if (entries.get(i).dateTime.getYear() == LocalDate.now().getYear()) {
+                            System.out.println(entries.get(i));
+                        }
                     }
                 }
                 entries.clear();
@@ -518,13 +596,14 @@ public class FinancialTransactionsCLI {
 
             //TODO Works somewhat, displays other entries too tho :(
             if (isReportPrevYear) {
-                sortTransactionsByAll(entries);
+                //sortTransactionsByAll(entries);
                 for (int i = 0; i < entries.size(); i++) {
                     //TODO Make Entry display Month Ex: Jan, Feb etc
                     //getMonth can convert to format for text?
-                    if (entries.get(i).dateTime.getYear() <= LocalDate.now().getYear() - 1 && entries.get(i).dateTime.getYear() >= LocalDate.now().getYear() - 1)
+                    if (entries.get(i).dateTime.getYear() == (LocalDateTime.now().getYear() - 1)) {
                         System.out.println("Entry #" + (i + 1));
-                    System.out.println(entries.get(i));
+                        System.out.println(entries.get(i));
+                    }
                 }
                 entries.clear();
             }
@@ -533,7 +612,7 @@ public class FinancialTransactionsCLI {
             if (isReportVendor) {
                 sortTransactionsByVendor(entries);
                 for (int i = 0; i < entries.size(); i++) {
-                        System.out.println("Entry #" + (i + 1));
+                    System.out.println("Entry #" + (i + 1));
                     System.out.println(entries.get(i));
                 }
                 entries.clear();
@@ -567,4 +646,4 @@ public class FinancialTransactionsCLI {
     /*public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
         transactions.sort((line1, line2) -> line2.getDate().compareTo(line1.getDate()));
     }*/
-    }
+}
