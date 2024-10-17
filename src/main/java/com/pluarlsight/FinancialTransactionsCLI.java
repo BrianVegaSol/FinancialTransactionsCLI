@@ -267,10 +267,9 @@ public class FinancialTransactionsCLI {
 
         }
     }
-//
-    //TODO Not showing menu after printing report
     public static void reports() {
         runReportsMenu = true;
+        while (runReportsMenu) {
         System.out.println("Welcome to the Reports Menu\n" +
                 "\nInput one of the following to start searching!\n" +
                 "1) Month To Date\n" +
@@ -280,7 +279,6 @@ public class FinancialTransactionsCLI {
                 "5) Search By Vendor\n" +
                 "0) Back\n" +
                 "H) Home");
-        while (runReportsMenu) {
             String reportStringInput = scan.nextLine();
             //Catch index errors for if()
             try {
@@ -492,7 +490,7 @@ public class FinancialTransactionsCLI {
                 entries.clear();
             }
 
-            //TODO Refuses to be called
+            //Refuses to be called LOL THERE'S NO PREV MONTH ENTRY TO DISPLAY THIS WORKS PERFECTLY!!!
             if (isReportPrevMonth) {
                 sortTransactionsByMonth(entries);
                 for (int i = 0; i < entries.size(); i++) {
