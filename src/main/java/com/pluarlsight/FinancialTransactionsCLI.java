@@ -268,7 +268,7 @@ public class FinancialTransactionsCLI {
         }
     }
 //
-
+    //TODO Not showing menu after printing report
     public static void reports() {
         runReportsMenu = true;
         System.out.println("Welcome to the Reports Menu\n" +
@@ -495,12 +495,9 @@ public class FinancialTransactionsCLI {
 
             if (isReportPrevMonth) {
                 sortTransactionsByMonth(entries);
-                System.out.println(entries.get(0).getDateTime().isBefore(LocalDateTime.now()));
                 for (int i = 0; i < entries.size(); i++) {
                     //TODO Make Entry display Month Ex: Jan, Feb etc
                     //getMonth can convert to format for text?
-
-                    //if (LocalDate.now().compareTo(entries.get(i).getDateTime().getMonth()) <= 1) {
                     int prevMonth = LocalDateTime.now().getMonthValue() - 1;
                     if (entries.get(i).dateTime.getMonthValue() == prevMonth) {
                         if (entries.get(i).dateTime.getYear() == LocalDate.now().getYear())
@@ -508,33 +505,46 @@ public class FinancialTransactionsCLI {
                         System.out.println(entries.get(i));
                     }
                 }
-            entries.clear();
+                entries.clear();
             }
 
 
-        if (isReportYearDate) {
-            sortTransactionsByAll(entries);
-            for (int i = 0; i < entries.size(); i++) {
-                System.out.println("Entry #" + (i + 1));
-                System.out.println(entries.get(i));
+            if (isReportYearDate) {
+                sortTransactionsByAll(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
+                }
+                entries.clear();
             }
-            entries.clear();
+
+            if (isReportPrevYear) {
+                sortTransactionsByAll(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    //TODO Make Entry display Month Ex: Jan, Feb etc
+                    //getMonth can convert to format for text?
+                    if (entries.get(i).dateTime.getYear() <= LocalDate.now().getYear() - 1 && entries.get(i).dateTime.getYear() >= LocalDate.now().getYear() - 1)
+                        System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
+                }
+                entries.clear();
+            }
+
+
+            if (isReportVendor) {
+                sortTransactionsByVendor(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                        System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
+                }
+                entries.clear();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        if (isReportPrevYear) {
-
-        }
-
-        if (isReportVendor) {
-
-        }
-
-
-    } catch(IOException e){
-        e.printStackTrace();
     }
-
-}
 //Generic example
     /*public class DateComparator implements Comparator<FinancialTransactionsCLI> {
         @Override
@@ -543,17 +553,19 @@ public class FinancialTransactionsCLI {
         }
     }*/
 
-//Generic for sorting
-//TODO Make time and date the same
-public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
-    transactions.sort((line1, line2) -> line2.getDateTime().compareTo(line1.getDateTime()));
-}
+    //Generic for sorting
+    public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
+        transactions.sort((line1, line2) -> line2.getDateTime().compareTo(line1.getDateTime()));
+    }
 
-public static void sortTransactionsByMonth(List<FinancialTransactionsCLI> transactions) {
-    transactions.sort(Comparator.comparing(line -> line.getDateTime().getMonth()));
-}
+    public static void sortTransactionsByMonth(List<FinancialTransactionsCLI> transactions) {
+        transactions.sort(Comparator.comparing(line -> line.getDateTime().getMonth()));
+    }
 
+    public static void sortTransactionsByVendor(List<FinancialTransactionsCLI> transactions) {
+        transactions.sort((line1, line2) -> line1.getVendor().compareTo(line2.getVendor()));
+    }
     /*public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
         transactions.sort((line1, line2) -> line2.getDate().compareTo(line1.getDate()));
     }*/
-}
+    }
