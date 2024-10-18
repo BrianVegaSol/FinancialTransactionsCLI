@@ -346,84 +346,6 @@ public class FinancialTransactionsCLI {
         }
     }
 
-
-    public static void customSearch() {
-        System.out.println("Welcome to the Custom Search Menu\n" +
-                "\nInput one of the following to start searching!\n" +
-                "Start Date");
-        String startDate = scan.nextLine();
-        LocalDateTime formStartDate = LocalDateTime.parse()
-        System.out.println("End Date");
-        String endDate = scan.nextLine();
-        System.out.println("Description");
-        String descrip = scan.nextLine();
-        System.out.println("Vendor");
-        String vend = scan.nextLine();
-        System.out.println("Amount");
-        double amoun = scan.nextDouble();
-        //Catch index errors for if()
-        try {
-            if (Character.toUpperCase(reportStringInput.charAt(0)) == 'H') {
-                runReportsMenu = false;
-                runLedgerScreen = false;
-                runHomeScreen = true;
-                return;
-            }
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Invalid input, try again");
-        }
-        //catch NumberFormat errors for ()
-        try {
-            switch (Integer.parseInt(reportStringInput)) {
-                case 0:
-                    runReportsMenu = false;
-                    runLedgerScreen = true;
-                    break;
-                case 1:
-                    isReportMonthDate = true;
-                    fileReader();
-                    isReportMonthDate = false;
-                    //All months
-                    break;
-                case 2:
-                    isReportPrevMonth = true;
-                    fileReader();
-                    isReportPrevMonth = false;
-                    //just last month
-                    break;
-                case 3:
-                    isReportYearDate = true;
-                    fileReader();
-                    isReportYearDate = false;
-                    //all entries but by year
-                    break;
-                case 4:
-                    isReportPrevYear = true;
-                    fileReader();
-                    isReportPrevYear = false;
-                    //only previous year
-                    break;
-                case 5:
-                    isReportVendor = true;
-                    fileReader();
-                    isReportVendor = false;
-                    //filter a-z by vendor
-                    break;
-                case 6:
-                    isReportCustomSearch = true;
-                    fileReader();
-                    isReportCustomSearch = false;
-                    break;
-                default:
-                    System.out.println("Invalid number, try again");
-                    reportStringInput = scan.nextLine();
-            }
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid input, try again");
-        }
-    }
-
-
     //Used for Writing to .csv
     //TODO Work on cleaning up validation
     public static void fileWriter() {
@@ -534,112 +456,122 @@ public class FinancialTransactionsCLI {
                 }
             }
 
-            if (isLedgerAll) {
-                for (int i = all.size() - 1; i > -1; i--) {
-                    System.out.println("Entry #" + (all.size() - i));
-                    System.out.println(all.get(i));
-                }
-                entries.clear();
-            }
+            //Custom Search
+            //need to have if null for empty search filters
+            //start and end should set()? then reuse some of previousYear() and adapt sorting()
+            //may need to make the get.contains
 
-            if (isLedgerDeposit) {
-                sortTransactionsByAll(entries);
+            //potentially lots of && and  maybe ||
+
+            if (isReportCustomSearch) {
+                System.out.println("Welcome to the Custom Search Menu\n" +
+                        "\nInput one of the following to start searching!\n" +
+                        "Start Date");
+                String startDate = scan.nextLine();
+                //maybe having try catch here? for A L L scans???
+                LocalDateTime dateTime = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm:ss");
+                String formDateTime = dateTime.format(formatter);
+
+                //LocalDateTime formStartDate = 2024-02-17 17:46:19;
+                System.out.println("End Date");
+                String endDate = scan.nextLine();
+                LocalDateTime formEndDate = LocalDateTime.parse(endDate);
+                System.out.println("Description");
+                String descrip = scan.nextLine();
+                System.out.println("Vendor");
+                String vend = scan.nextLine();
+                System.out.println("Amount");
+                double amoun = scan.nextDouble();
+                //need lots of if null then ??? but since Enter is \n then if "\n" or "" then ??
+                //not!   ???
+                if (startDate.isEmpty()) {
+                    //formStartDate = LocalDateTime.parse(startDate);
+                } else if (endDate.isEmpty()) {
+
+                }
+                else if (descrip.isEmpty()) {
+
+                }
+                else if (vend.isEmpty()) {
+
+                }
+                else if (amoun == 0) {
+                }
+                else {
+
+                }
+
+                //might need a lot/some ifs based on what is searched
+                sortCustom(entries);
                 for (int i = 0; i < entries.size(); i++) {
-                    if (entries.get(i).getType().equals("Deposit")) {
-                        System.out.println("Entry #" + (i + 1));
-                        System.out.println(entries.get(i));
-                    }
-
+                    System.out.println("Entry #" + (i + 1));
+                    //System.out.println(entries.get(i).getDateTime().compareTo(formStartDate));
                 }
                 entries.clear();
             }
 
-            if (isLedgerPayment) {
-                sortTransactionsByAll(entries);
-                for (int i = 0; i < entries.size(); i++) {
-                    if (entries.get(i).getType().equals("Payment")) {
-                        System.out.println("Entry #" + (i + 1));
-                        System.out.println(entries.get(i));
-                    }
 
-                }
-                entries.clear();
+
+
+        if (isLedgerAll) {
+            for (int i = all.size() - 1; i > -1; i--) {
+                System.out.println("Entry #" + (all.size() - i));
+                System.out.println(all.get(i));
             }
-            if (isReportMonthDate) {
-                sortTransactionsByMonth(entries);
-                for (int i = 0; i < entries.size(); i++) {
-                    switch (entries.get(i).getDateTime().getMonthValue()) {
-                        case 1:
-                            System.out.println("January Entry");
-                            break;
-                        case 2:
-                            System.out.println("February Entry");
-                            break;
-                        case 3:
-                            System.out.println("March Entry");
-                            break;
-                        case 4:
-                            System.out.println("April Entry");
-                            break;
-                        case 5:
-                            System.out.println("May Entry");
-                            break;
-                        case 6:
-                            System.out.println("June Entry");
-                            break;
-                        case 7:
-                            System.out.println("July Entry");
-                            break;
-                        case 8:
-                            System.out.println("August Entry");
-                            break;
-                        case 9:
-                            System.out.println("September Entries");
-                            break;
-                        case 10:
-                            System.out.println("October Entries");
-                            break;
-                        case 11:
-                            System.out.println("November Entries");
-                            break;
-                        case 12:
-                            System.out.println("December Entries");
-                            break;
+            entries.clear();
+        }
 
-                    }
-                    System.out.println(entries.get(i) + "\n");
+        if (isLedgerDeposit) {
+            sortTransactionsByAll(entries);
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getType().equals("Deposit")) {
+                    System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
                 }
-                entries.clear();
-            }
 
-            //Refuses to be called LOL THERE'S NO PREV MONTH ENTRY TO DISPLAY THIS WORKS PERFECTLY!!!
-            if (isReportPrevMonth) {
-                sortTransactionsByMonth(entries);
-                int month = LocalDateTime.now().getMonthValue();
-                switch (month - 1) {
+            }
+            entries.clear();
+        }
+
+        if (isLedgerPayment) {
+            sortTransactionsByAll(entries);
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getType().equals("Payment")) {
+                    System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
+                }
+
+            }
+            entries.clear();
+        }
+        if (isReportMonthDate) {
+            sortTransactionsByMonth(entries);
+            for (int i = 0; i < entries.size(); i++) {
+                switch (entries.get(i).getDateTime().getMonthValue()) {
                     case 1:
-                        System.out.println("January Entries");
+                        System.out.println("January Entry");
                         break;
                     case 2:
-                        System.out.println("February Entries");
+                        System.out.println("February Entry");
                         break;
                     case 3:
-                        System.out.println("March Entries");
+                        System.out.println("March Entry");
                         break;
                     case 4:
-                        System.out.println("April Entries");
+                        System.out.println("April Entry");
                         break;
                     case 5:
-                        System.out.println("May Entries");
+                        System.out.println("May Entry");
                         break;
                     case 6:
-                        System.out.println("June Entries");
+                        System.out.println("June Entry");
                         break;
                     case 7:
-                        System.out.println("July Entries");
+                        System.out.println("July Entry");
                         break;
                     case 8:
-                        System.out.println("August Entries");
+                        System.out.println("August Entry");
                         break;
                     case 9:
                         System.out.println("September Entries");
@@ -655,72 +587,66 @@ public class FinancialTransactionsCLI {
                         break;
 
                 }
-
-                for (int i = 0; i < entries.size(); i++) {
-                    //TODO Make Entry display Month Ex: Jan, Feb etc
-                    //getMonth can convert to format for text?
-                    int prevMonth = LocalDateTime.now().getMonthValue() - 1;
-                    if (entries.get(i).dateTime.getMonthValue() == prevMonth) {
-                        if (entries.get(i).dateTime.getYear() == LocalDate.now().getYear()) {
-                            System.out.println(entries.get(i));
-                        }
-                    }
-                }
-                entries.clear();
+                System.out.println(entries.get(i) + "\n");
             }
-
-
-            if (isReportYearDate) {
-                sortTransactionsByAll(entries);
-                for (int i = 0; i < entries.size(); i++) {
-                    System.out.println("Entry #" + (i + 1));
-                    System.out.println(entries.get(i));
-                }
-                entries.clear();
-            }
-
-
-            if (isReportPrevYear) {
-                for (int i = 0; i < entries.size(); i++) {
-                    if (entries.get(i).dateTime.getYear() == (LocalDateTime.now().getYear() - 1)) {
-                        System.out.println("Entry #" + (i + 1));
-                        System.out.println(entries.get(i));
-                    }
-                }
-                entries.clear();
-            }
-
-
-            if (isReportVendor) {
-                sortTransactionsByVendor(entries);
-                for (int i = 0; i < entries.size(); i++) {
-                    System.out.println("Entry #" + (i + 1));
-                    System.out.println(entries.get(i));
-                }
-                entries.clear();
-            }
-
-
-            if (isReportCustomSearch) {
-                sortTransactionsByVendor(entries);
-                for (int i = 0; i < entries.size(); i++) {
-                    System.out.println("Entry #" + (i + 1));
-                    System.out.println(entries.get(i));
-                }
-                entries.clear();
-            }
-
-            /*
-             * if || &&
-             * if !null then
-             * */
-            //String user inputs -> parse to Data Type
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            entries.clear();
         }
+
+        //Refuses to be called LOL THERE'S NO PREV MONTH ENTRY TO DISPLAY THIS WORKS PERFECTLY!!!
+        if (isReportPrevMonth) {
+            sortTransactionsByMonth(entries);
+            for (int i = 0; i < entries.size(); i++) {
+                int prevMonth = LocalDateTime.now().getMonthValue() - 1;
+                if (entries.get(i).dateTime.getMonthValue() == prevMonth) {
+                    if (entries.get(i).dateTime.getYear() == LocalDate.now().getYear()) {
+                        LocalDate lastMonth = LocalDate.now().minusMonths(1);
+                        String lastMonthName = lastMonth.getMonth().name();
+                        System.out.println(lastMonthName + " Entries");
+                        System.out.println(entries.get(i) + "\n");
+                    }
+                }
+            }
+            entries.clear();
+        }
+
+
+        if (isReportYearDate) {
+            sortTransactionsByAll(entries);
+            for (int i = 0; i < entries.size(); i++) {
+                System.out.println("Entry #" + (i + 1));
+                System.out.println(entries.get(i));
+            }
+            entries.clear();
+        }
+
+
+        if (isReportPrevYear) {
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).dateTime.getYear() == (LocalDateTime.now().getYear() - 1)) {
+                    System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
+                }
+            }
+            entries.clear();
+        }
+
+
+        if (isReportVendor) {
+            sortTransactionsByVendor(entries);
+            for (int i = 0; i < entries.size(); i++) {
+                System.out.println("Entry #" + (i + 1));
+                System.out.println(entries.get(i));
+            }
+            entries.clear();
+        }
+
+    } catch(
+    IOException e)
+
+    {
+        e.printStackTrace();
     }
+}
 
 //Generic example
     /*public class DateComparator implements Comparator<FinancialTransactionsCLI> {
@@ -730,24 +656,24 @@ public class FinancialTransactionsCLI {
         }
     }*/
 
-    //Generic for sorting
-    public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
-        transactions.sort((line1, line2) -> line2.getDateTime().compareTo(line1.getDateTime()));
-    }
+//Generic for sorting
+public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
+    transactions.sort((line1, line2) -> line2.getDateTime().compareTo(line1.getDateTime()));
+}
 
-    public static void sortTransactionsByMonth(List<FinancialTransactionsCLI> transactions) {
-        transactions.sort(Comparator.comparing(line -> line.getDateTime().getMonth()));
-    }
+public static void sortTransactionsByMonth(List<FinancialTransactionsCLI> transactions) {
+    transactions.sort(Comparator.comparing(line -> line.getDateTime().getMonth()));
+}
 
-    public static void sortTransactionsByVendor(List<FinancialTransactionsCLI> transactions) {
-        transactions.sort((line1, line2) -> line1.getVendor().compareTo(line2.getVendor()));
-    }
+public static void sortTransactionsByVendor(List<FinancialTransactionsCLI> transactions) {
+    transactions.sort((line1, line2) -> line1.getVendor().compareTo(line2.getVendor()));
+}
 
 
-    // Custom Sorting
-    public void sortCustom(FinancialTransactionsCLI transactions) {
-        transactions.sortCustom((FinancialTransactionsCLI) Comparator.comparing(FinancialTransactionsCLI::getDate).thenComparing(FinancialTransactionsCLI::getAmount));
-    }
+// Custom Sorting
+public static void sortCustom(ArrayList<FinancialTransactionsCLI> transactions) {
+    transactions.sort((Comparator<? super FinancialTransactionsCLI>) Comparator.comparing(FinancialTransactionsCLI::getDate).thenComparing(FinancialTransactionsCLI::getAmount));
+}
 
 
 
