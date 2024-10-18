@@ -132,6 +132,7 @@ public class FinancialTransactionsCLI {
     static boolean isReportYearDate = false;
     static boolean isReportVendor = false;
     static boolean isReportPrevYear = false;
+    static boolean isReportCustomSearch = false;
 
 
     public static void main(String[] args) {
@@ -278,6 +279,7 @@ public class FinancialTransactionsCLI {
                     "3) Year To Date\n" +
                     "4) Previous Year\n" +
                     "5) Search By Vendor\n" +
+                    "6) Custom Search\n" +
                     "0) Back\n" +
                     "H) Home");
             String reportStringInput = scan.nextLine();
@@ -329,6 +331,11 @@ public class FinancialTransactionsCLI {
                         isReportVendor = false;
                         //filter a-z by vendor
                         break;
+                    case 6:
+                        isReportCustomSearch = true;
+                        fileReader();
+                        isReportCustomSearch = false;
+                        break;
                     default:
                         System.out.println("Invalid number, try again");
                         reportStringInput = scan.nextLine();
@@ -338,6 +345,84 @@ public class FinancialTransactionsCLI {
             }
         }
     }
+
+
+    public static void customSearch() {
+        System.out.println("Welcome to the Custom Search Menu\n" +
+                "\nInput one of the following to start searching!\n" +
+                "Start Date");
+        String startDate = scan.nextLine();
+        LocalDateTime formStartDate = LocalDateTime.parse()
+        System.out.println("End Date");
+        String endDate = scan.nextLine();
+        System.out.println("Description");
+        String descrip = scan.nextLine();
+        System.out.println("Vendor");
+        String vend = scan.nextLine();
+        System.out.println("Amount");
+        double amoun = scan.nextDouble();
+        //Catch index errors for if()
+        try {
+            if (Character.toUpperCase(reportStringInput.charAt(0)) == 'H') {
+                runReportsMenu = false;
+                runLedgerScreen = false;
+                runHomeScreen = true;
+                return;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Invalid input, try again");
+        }
+        //catch NumberFormat errors for ()
+        try {
+            switch (Integer.parseInt(reportStringInput)) {
+                case 0:
+                    runReportsMenu = false;
+                    runLedgerScreen = true;
+                    break;
+                case 1:
+                    isReportMonthDate = true;
+                    fileReader();
+                    isReportMonthDate = false;
+                    //All months
+                    break;
+                case 2:
+                    isReportPrevMonth = true;
+                    fileReader();
+                    isReportPrevMonth = false;
+                    //just last month
+                    break;
+                case 3:
+                    isReportYearDate = true;
+                    fileReader();
+                    isReportYearDate = false;
+                    //all entries but by year
+                    break;
+                case 4:
+                    isReportPrevYear = true;
+                    fileReader();
+                    isReportPrevYear = false;
+                    //only previous year
+                    break;
+                case 5:
+                    isReportVendor = true;
+                    fileReader();
+                    isReportVendor = false;
+                    //filter a-z by vendor
+                    break;
+                case 6:
+                    isReportCustomSearch = true;
+                    fileReader();
+                    isReportCustomSearch = false;
+                    break;
+                default:
+                    System.out.println("Invalid number, try again");
+                    reportStringInput = scan.nextLine();
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid input, try again");
+        }
+    }
+
 
     //Used for Writing to .csv
     //TODO Work on cleaning up validation
@@ -378,12 +463,7 @@ public class FinancialTransactionsCLI {
     }
 
     public static String splitValidation(String userEntry, String type) {
-        //add a while until user adds valid data?
-        //TODO Add if amount < 0 ask if wanted to do Payment (y/n) and fix if wanted Depo
-        //TODO Make Payments with negative value abs(value) if type.equals "Payment" then abs(amount)
-        //TODO do while {Continue
         String[] pipeSplit = userEntry.split("\\|");
-        //
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm:ss");
         String formDateTime = dateTime.format(formatter);
@@ -391,7 +471,12 @@ public class FinancialTransactionsCLI {
         try {
             amount = Double.parseDouble(pipeSplit[2]);
             if (amount > 0 && type.equals("Payment")) {
-                amount *= -1;
+                amount = amount * -1;
+                String description = pipeSplit[0];
+                String vendor = pipeSplit[1];
+                amount = Double.parseDouble(pipeSplit[2]);
+                String validationEntry = type + "|" + formDateTime + "|" + description + "|" + vendor + "|-" + amount;
+                return validationEntry;
             }
             if (amount < 0 && type.equals("Deposit")) {
                 System.out.println("Amount is negative\n" +
@@ -437,6 +522,7 @@ public class FinancialTransactionsCLI {
                     String vendor = pipeSplit[4];
                     double amount = Double.parseDouble(pipeSplit[5]);
                     transactions = new FinancialTransactionsCLI(type, date, time, description, vendor, amount);
+
                     entries.add(transactions);
                     if (isLedgerAll) {
                         all.add(line);
@@ -479,7 +565,6 @@ public class FinancialTransactionsCLI {
                 }
                 entries.clear();
             }
-            //TODO Need to merge Date and Time from here on out
             if (isReportMonthDate) {
                 sortTransactionsByMonth(entries);
                 for (int i = 0; i < entries.size(); i++) {
@@ -594,12 +679,9 @@ public class FinancialTransactionsCLI {
                 entries.clear();
             }
 
-            //TODO Works somewhat, displays other entries too tho :(
+
             if (isReportPrevYear) {
-                //sortTransactionsByAll(entries);
                 for (int i = 0; i < entries.size(); i++) {
-                    //TODO Make Entry display Month Ex: Jan, Feb etc
-                    //getMonth can convert to format for text?
                     if (entries.get(i).dateTime.getYear() == (LocalDateTime.now().getYear() - 1)) {
                         System.out.println("Entry #" + (i + 1));
                         System.out.println(entries.get(i));
@@ -619,10 +701,27 @@ public class FinancialTransactionsCLI {
             }
 
 
+            if (isReportCustomSearch) {
+                sortTransactionsByVendor(entries);
+                for (int i = 0; i < entries.size(); i++) {
+                    System.out.println("Entry #" + (i + 1));
+                    System.out.println(entries.get(i));
+                }
+                entries.clear();
+            }
+
+            /*
+             * if || &&
+             * if !null then
+             * */
+            //String user inputs -> parse to Data Type
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 //Generic example
     /*public class DateComparator implements Comparator<FinancialTransactionsCLI> {
         @Override
@@ -643,6 +742,17 @@ public class FinancialTransactionsCLI {
     public static void sortTransactionsByVendor(List<FinancialTransactionsCLI> transactions) {
         transactions.sort((line1, line2) -> line1.getVendor().compareTo(line2.getVendor()));
     }
+
+
+    // Custom Sorting
+    public void sortCustom(FinancialTransactionsCLI transactions) {
+        transactions.sortCustom((FinancialTransactionsCLI) Comparator.comparing(FinancialTransactionsCLI::getDate).thenComparing(FinancialTransactionsCLI::getAmount));
+    }
+
+
+
+
+
     /*public static void sortTransactionsByAll(List<FinancialTransactionsCLI> transactions) {
         transactions.sort((line1, line2) -> line2.getDate().compareTo(line1.getDate()));
     }*/
